@@ -3,4 +3,8 @@ $red: rgb(255, 0, 0);
 
 .Test {
     color: $red;
+    &:hover {
+        color: rgb(0, 0, 255);
+        cursor: pointer;
+    }
 }
