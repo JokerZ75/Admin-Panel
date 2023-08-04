@@ -1,10 +1,10 @@
-import './App.css'
+
 
 function App() {
 
   return (
     <>
-
+      <h1 className='Test'>Hello</h1>
     </>
   )
 }
