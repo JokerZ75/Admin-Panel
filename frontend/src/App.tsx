@@ -1,12 +1,19 @@
-
-
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Home, Test } from "./pages";
+import Layout from "./components/Layout";
 function App() {
-
   return (
     <>
-      <h1 className='Test'>Hello</h1>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/">
+              <Route index element={<Home />} />
+              <Route path="/test" element={<Test />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
