@@ -1,20 +1,14 @@
 import React from "react";
+import { useDarkMode } from "../lib/context/darkModeContext";
 
 const Test = () => {
-    const [theme, setTheme] = React.useState(false);
 
-    React.useEffect(() => {
-        if (theme) {
-            document.body.classList.add("dark-mode");
-        } else {
-            document.body.classList.remove("dark-mode");
-        }
-    }, [theme]);
+    const { setDarkMode,darkMode } = useDarkMode();
 
     return (
         <div>
             <h1 className="Test">Test Page</h1>
-            <button onClick={() => setTheme(!theme)}>Toggle Theme</button>
+            <button onClick={() => setDarkMode(!darkMode)}>Toggle Theme</button>
         </div>
     );
 };

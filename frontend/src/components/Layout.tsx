@@ -1,5 +1,6 @@
 import React, { FC, ReactNode } from "react";
 import Navbar from "./Navbar";
+import { DarkModeProvider } from "../lib/context/darkModeContext";
 
 interface Props {
     children: ReactNode;
