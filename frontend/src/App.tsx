@@ -1,49 +1,30 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Home, Orders, Graphs, Profile } from "./pages";
+import React, { lazy, Suspense } from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Home } from "./pages";
 import Layout from "./components/Layout";
 import { DarkModeProvider } from "./lib/context/darkModeContext";
+
+const Orders = lazy(() => import("./pages/Orders"));
+const Graphs = lazy(() => import("./pages/Graphs"));
+const Profile = lazy(() => import("./pages/Profile"));
+
+const router = createBrowserRouter([
+  {
+    element: <Layout />,
+    children: [
+      { path: "/", element: <Home /> },
+      { path: "/orders", element: <Orders /> },
+      { path: "/graphs", element: <Graphs /> },
+      { path: "/profile", element: <Profile /> },
+    ],
+  },
+]);
+
 function App() {
   return (
     <>
       <DarkModeProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/">
-              <Route
-                index
-                element={
-                  <Layout>
-                    <Home />
-                  </Layout>
-                }
-              />
-              <Route
-                path="/orders"
-                element={
-                  <Layout>
-                    <Orders />
-                  </Layout>
-                }
-              />
-              <Route
-                path="/graphs"
-                element={
-                  <Layout>
-                    <Graphs />
-                  </Layout>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <Layout>
-                    <Profile />
-                  </Layout>
-                }
-              />
-            </Route>
-          </Routes>
-        </BrowserRouter>
+        <RouterProvider router={router} />
       </DarkModeProvider>
     </>
   );

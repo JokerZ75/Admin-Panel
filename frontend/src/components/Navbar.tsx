@@ -35,7 +35,6 @@ const Navbar: FC = () => {
           <Link className="link" to={"/profile"}><h1 className="link-text">Profile</h1></Link>
         </nav>
       </div>
-      <Outlet />
     </>
   );
 };
