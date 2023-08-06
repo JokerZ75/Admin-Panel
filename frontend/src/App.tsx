@@ -1,20 +1,50 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Home, Test } from "./pages";
+import { Home, Orders, Graphs, Profile } from "./pages";
 import Layout from "./components/Layout";
-import { DarkModeProvider } from './lib/context/darkModeContext';
+import { DarkModeProvider } from "./lib/context/darkModeContext";
 function App() {
   return (
     <>
-    <DarkModeProvider>
+      <DarkModeProvider>
         <BrowserRouter>
           <Routes>
             <Route path="/">
-              <Route index element={<Layout><Home/></Layout>} />
-              <Route path="/test" element={<Layout><Test /></Layout>} />
+              <Route
+                index
+                element={
+                  <Layout>
+                    <Home />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/orders"
+                element={
+                  <Layout>
+                    <Orders />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/graphs"
+                element={
+                  <Layout>
+                    <Graphs />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <Layout>
+                    <Profile />
+                  </Layout>
+                }
+              />
             </Route>
           </Routes>
         </BrowserRouter>
-    </DarkModeProvider>
+      </DarkModeProvider>
     </>
   );
 }
