@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout } from "../components";
+import { Layout, Graph } from "../components";
 
 const index = () => {
   return (
@@ -13,7 +13,9 @@ const index = () => {
             <div className="card-heading">
               <h2>Sales Graph</h2>
             </div>
-            <div className="card-body-graph"></div>
+            <div className="card-body-graph">
+              <Graph  />
+            </div>
           </div>
           <div className="card table">
             <div className="card-heading">
