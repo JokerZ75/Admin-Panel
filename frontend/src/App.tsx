@@ -1,8 +1,9 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Home } from "./pages";
 import Layout from "./components/Layout";
 import { DarkModeProvider } from "./lib/context/darkModeContext";
+
 
 const Orders = lazy(() => import("./pages/Orders"));
 const Graphs = lazy(() => import("./pages/Graphs"));

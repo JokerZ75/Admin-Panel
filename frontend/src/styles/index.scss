@@ -32,6 +32,51 @@ body {
   color: var(--text);
 }
 
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.loading-text {
+  font-size: 5rem;
+  color: var(--text);
+  animation: loading 1s ease-in-out infinite;
+}
+
+@keyframes loading {
+  0% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
+
+.loading-spinner {
+  display: block;
+  width: 5rem;
+  height: 5rem;
+  border: 0.5rem solid var(--text);
+  border-radius: 50%;
+  border-top: 0.5rem solid var(--cardBackgrounds);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 #nav-container {
   position: static;
   display: flex;
