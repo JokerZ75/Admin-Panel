@@ -1,7 +1,45 @@
-
-
 @media (min-width: 720px) {
+  #burger-menu {
+    display: none;
+  }
 
+  #nav-container {
+    float: left;
+    display: flex;
+    height: 50dvh;
+    width: 20rem;
+    justify-content: space-between;
+    padding: 0.5rem;
+    margin: 7rem 1rem 0rem 1rem;
+    box-shadow: 0 0 0.5rem var(--text);
+  }
 
+  #heading {
+    margin-top: 2rem;
+  }
+  #navbar {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    max-height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  #nav-top-items {
+    display: flex;
+  }
+  #theme-toggle {
+    margin-left: 1rem;
+  }
 
+  #cards-holder {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 1rem;
+  }
+
+  .card {
+    max-width: 45rem;
+    min-width: 15rem;
+  }
 }
