@@ -6,16 +6,17 @@
   #nav-container {
     float: left;
     display: flex;
-    height: 50dvh;
+    height: 80dvh;
     width: 20rem;
     justify-content: space-between;
     padding: 0.5rem;
-    margin: 7rem 1rem 0rem 1rem;
+    margin: 0rem 1rem 0rem 1rem;
     box-shadow: 0 0 0.5rem var(--text);
   }
 
   #heading {
     margin-top: 2rem;
+    margin-left: 24rem;
   }
   #navbar {
     display: flex;
