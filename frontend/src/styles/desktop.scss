@@ -43,4 +43,13 @@
     max-width: 45rem;
     min-width: 15rem;
   }
+
+  #footer{
+    display: grid;
+    grid-template-columns: 28% 28% 28%;
+    grid-template-rows: 200px;
+    grid-gap: 2rem;
+    margin: 1rem;
+
+  }
 }
