@@ -1,9 +1,6 @@
 import React, { FC, ReactNode, Suspense } from "react";
-import Navbar from "./Navbar";
-import { DarkModeProvider } from "../lib/context/darkModeContext";
 import { Outlet } from "react-router-dom";
-import Loading from "./Loading";
-import Footer from "./Footer";
+import { Loading, Footer, Navbar } from "./";
 
 const Layout: FC = ({ children }: any) => {
   return (
