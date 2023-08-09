@@ -1,5 +1,38 @@
 import React from "react";
 import { Layout, Graph } from "../components";
+import { columns, Order} from '../components/OrdersTable/columns';
+
+
+async function getOrders():Promise<Order[]> {
+
+  return [
+      {
+          id: "1",
+          name: "John Doe",
+          email: "johnDoe@email.com",
+          address: "1234 Main St",
+          status: "success",
+          amount: 100
+      },
+      {
+          id: "2",
+          name: "Jane Doe",
+          email: "janeDoe@email.com",
+          address: "1234 Main St",
+          status: "pending",
+          amount: 100
+      },
+      {
+          id: "3",
+          name: "John Smith",
+          email: "smith@email.com",
+          address: "1234 Main St",
+          status: "cancelled",
+          amount: 100
+      }
+  ]
+}
+
 
 const index = () => {
   return (
@@ -21,7 +54,9 @@ const index = () => {
             <div className="card-heading">
               <h2>Recent Orders</h2>
             </div>
-            <div className="card-body-table"></div>
+            <div className="card-body-table">
+              <DataTable columns={columns} data={} />
+            </div>
           </div>
           <div className="card">
             <div className="card-heading">
