@@ -2,11 +2,6 @@
 
 import React from "react";
 
-export type PaginationState = {
-  pageIndex: number
-  pageSize: number
-}
-
 import {
   ColumnDef,
   flexRender,

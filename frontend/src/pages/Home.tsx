@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Graph } from "../components";
-import { columns, RecentOrder } from "../components/OrdersTable/columns";
-import { DataTable } from "../components/OrdersTable/data-table";
+import { columns, RecentOrder } from "../components/Data-table-Columns/RecentOrders";
+import { DataTable } from "../components/ui/data-table";
 async function getOrders(): Promise<RecentOrder[]> {
   return [
     {
