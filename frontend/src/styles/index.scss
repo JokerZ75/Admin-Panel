@@ -302,3 +302,25 @@ body {
         color: var(--cardBackgrounds);
     }
 }
+
+.filter-input {
+  margin: 0.5rem;
+  padding: 0.5rem;
+  color: var(--text);
+
+    & select{
+      margin-left: 0.5rem;
+      background-color: var(--cardBackgrounds);
+      color: var(--text);
+      border: 0.1rem solid var(--text);
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+      transition: all 0.5s ease-in-out;
+
+        &:focus {
+            outline: none;
+            background-color: var(--text);
+            color: var(--cardBackgrounds);
+        }
+    }
+}
