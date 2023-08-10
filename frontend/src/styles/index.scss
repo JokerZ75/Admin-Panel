@@ -325,4 +325,20 @@ body {
             color: var(--cardBackgrounds);
         }
     }
+
+    & button {
+      margin-left: 0.5rem;
+      background-color: var(--cardBackgrounds);
+      color: var(--text);
+      border: 0.1rem solid var(--text);
+      border-radius: 0.5rem;
+      padding: 0.3rem;
+      cursor: pointer;
+      transition: all 0.5s ease-in-out;
+
+        &:hover {
+            background-color: var(--text);
+            color: var(--cardBackgrounds);
+        }
+    }
 }

@@ -38,7 +38,6 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-  const selectRef = React.useRef<HTMLSelectElement>(null);
 
   const table = useReactTable({
     data,
@@ -71,9 +70,10 @@ export function DataTable<TData, TValue>({
           name=""
           id=""
           value={(table.getColumn("status")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("status")?.setFilterValue(event.target.value)
-          }
+          onChange={(event) => {
+            table.getColumn("status")?.setFilterValue(event.target.value);
+            setCurrentPage(1);
+          }}
         >
           <option value="">Filter Status</option>
           {type === "shipment" ? (
@@ -84,15 +84,16 @@ export function DataTable<TData, TValue>({
           <option value="Pending">Pending</option>
           <option value="Cancelled">Cancelled</option>
         </select>
-        {table.getColumn("status")?.getFilterValue() &&
+        {table.getColumn("status")?.getFilterValue() && (
           <button
             onClick={() => {
               table.getColumn("status")?.setFilterValue("");
+              setCurrentPage(1);
             }}
           >
             Clear
           </button>
-        }
+        )}
       </div>
       <Table id="table-el">
         <TableHeader>
