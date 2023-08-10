@@ -32,12 +32,13 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
   columns,
   data,
-  type
+  type,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
+  const selectRef = React.useRef<HTMLSelectElement>(null);
 
   const table = useReactTable({
     data,
@@ -64,6 +65,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="rounded-xl border">
+      {/* @ts-ignore */}
       <div className="filter-input">
         <select
           name=""
@@ -74,12 +76,25 @@ export function DataTable<TData, TValue>({
           }
         >
           <option value="">Filter Status</option>
-          {type === "shipment" ? <option value="Shipped">Shipped</option> : <option value="Success">Success</option> }
+          {type === "shipment" ? (
+            <option value="Shipped">Shipped</option>
+          ) : (
+            <option value="Success">Success</option>
+          )}
           <option value="Pending">Pending</option>
           <option value="Cancelled">Cancelled</option>
         </select>
+        {table.getColumn("status")?.getFilterValue() &&
+          <button
+            onClick={() => {
+              table.getColumn("status")?.setFilterValue("");
+            }}
+          >
+            Clear
+          </button>
+        }
       </div>
-      <Table>
+      <Table id="table-el">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>

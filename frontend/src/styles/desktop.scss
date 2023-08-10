@@ -42,6 +42,8 @@
   }
 
   .card {
+    margin-top: 0rem;
+    margin-bottom: 0;
     max-width: 45rem;
     min-width: 15rem;
   }
@@ -57,6 +59,11 @@
 
   .card-body-table {
     max-width: 40rem;
+    min-width: 15rem;
     width: 100%;
+  }
+  #table-el{
+    min-height: 13rem;
+    height: 100%;
   }
 }
