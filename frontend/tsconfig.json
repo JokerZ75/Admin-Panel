@@ -20,6 +20,9 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src", "src/components/ui/.tsx"],
+  "ts-node": {
+    "esm": true
+  },
+  "include": ["src", "src/components/ui/.tsx", "server"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
