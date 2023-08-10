@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { Layout, Graph } from "../components";
 import { columns, Order} from '../components/OrdersTable/columns';
+import { DataTable } from "../components/OrdersTable/data-table";
+import useEffect from 'react';
+import Orders from './Orders';
 
 
 async function getOrders():Promise<Order[]> {
@@ -35,6 +38,11 @@ async function getOrders():Promise<Order[]> {
 
 
 const index = () => {
+  const [data , setData] = useState<Order[]>([]);
+  useMemo(() => 
+    getOrders().then((orders:Order[]) => setData(orders)),
+   []);
+
   return (
     <>
       <div id="main-content-container">
@@ -55,7 +63,7 @@ const index = () => {
               <h2>Recent Orders</h2>
             </div>
             <div className="card-body-table">
-              <DataTable columns={columns} data={} />
+              <DataTable columns={columns} data={data} />
             </div>
           </div>
           <div className="card">
