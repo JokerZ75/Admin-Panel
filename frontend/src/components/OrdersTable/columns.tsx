@@ -3,16 +3,14 @@
 import React from "react";
 import { ColumnDef } from "@tanstack/react-table";
 
-export type Order = {
+export type RecentOrder = {
     id: string;
     name: string;
-    email: string;
-    address: string;
     status: "success" | "pending" | "cancelled";
     amount: number;
 };
 
-export const columns: ColumnDef<Order>[] = [
+export const columns: ColumnDef<RecentOrder>[] = [
     {
         header: "ID",
         accessorKey: "id"
@@ -22,20 +20,20 @@ export const columns: ColumnDef<Order>[] = [
         accessorKey: "name"
     },
     {
-        header: "Email",
-        accessorKey: "email"
-    },
-    {
-        header: "Address",
-        accessorKey: "address"
-    },
-    {
         header: "Status",
         accessorKey: "status"
     },
     {
-        header: "Amount",
-        accessorKey: "amount"
+        accessorKey: "amount",
+        header: () => <div className="text-right">Amount</div>,
+        cell: ({ row }) => {
+          const amount = parseFloat(row.getValue("amount"))
+          const formatted = new Intl.NumberFormat("en-us", {
+            style: "currency",
+            currency: "gbp",
+          }).format(amount)
+          return <div className="text-right font-medium">{formatted}</div>
+        },
     }
 ]; 
 

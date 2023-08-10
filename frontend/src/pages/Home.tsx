@@ -1,47 +1,79 @@
 import React, { useMemo, useState } from "react";
-import { Layout, Graph } from "../components";
-import { columns, Order} from '../components/OrdersTable/columns';
+import { Graph } from "../components";
+import { columns, RecentOrder } from "../components/OrdersTable/columns";
 import { DataTable } from "../components/OrdersTable/data-table";
-import useEffect from 'react';
-import Orders from './Orders';
-
-
-async function getOrders():Promise<Order[]> {
-
+async function getOrders(): Promise<RecentOrder[]> {
   return [
-      {
-          id: "1",
-          name: "John Doe",
-          email: "johnDoe@email.com",
-          address: "1234 Main St",
-          status: "success",
-          amount: 100
-      },
-      {
-          id: "2",
-          name: "Jane Doe",
-          email: "janeDoe@email.com",
-          address: "1234 Main St",
-          status: "pending",
-          amount: 100
-      },
-      {
-          id: "3",
-          name: "John Smith",
-          email: "smith@email.com",
-          address: "1234 Main St",
-          status: "cancelled",
-          amount: 100
-      }
-  ]
+    {
+      id: "1",
+      name: "John Doe",
+      status: "success",
+      amount: 100,
+    },
+    {
+      id: "2",
+      name: "Jane Doe",
+      status: "pending",
+      amount: 100,
+    },
+    {
+      id: "3",
+      name: "John Smith",
+      status: "cancelled",
+      amount: 100,
+    },
+    {
+      id: "4",
+      name: "Jane Smith",
+      status: "success",
+      amount: 100,
+    },
+    {
+      id: "5",
+      name: "John Doe",
+      status: "success",
+      amount: 100,
+    },
+    {
+      id: "6",
+      name: "Jane Doe",
+      status: "pending",
+      amount: 100,
+    },
+    {
+      id: "7",
+      name: "John Smith",
+      status: "cancelled",
+      amount: 100,
+    },
+    {
+      id: "8",
+      name: "Jane Smith",
+      status: "success",
+      amount: 100,
+    },
+    {
+      id: "9",
+
+      name: "John Doe",
+      status: "success",
+      amount: 100,
+    },
+    {
+      id: "10",
+      name: "Jane Doe",
+      status: "pending",
+      amount: 100,
+    },
+  ];
 }
 
-
 const index = () => {
-  const [data , setData] = useState<Order[]>([]);
-  useMemo(() => 
-    getOrders().then((orders:Order[]) => setData(orders)),
-   []);
+  const [data, setData] = useState<RecentOrder[]>([]);
+  useMemo(
+    () => getOrders().then((orders: RecentOrder[]) => setData(orders)),
+    []
+  );
 
   return (
     <>
@@ -55,10 +87,10 @@ const index = () => {
               <h2>Sales Graph</h2>
             </div>
             <div className="card-body-graph">
-              <Graph  />
+              <Graph />
             </div>
           </div>
-          <div className="card table">
+          <div className="card">
             <div className="card-heading">
               <h2>Recent Orders</h2>
             </div>

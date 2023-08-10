@@ -2,10 +2,16 @@
 
 import React from "react";
 
+export type PaginationState = {
+  pageIndex: number
+  pageSize: number
+}
+
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -31,10 +37,19 @@ export function DataTable<TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageIndex: 0,
+        pageSize: 5,
+      },
+    },
   });
 
+  const [currentPage, setCurrentPage] = React.useState(1);
+
   return (
-    <div className="rounded-md border">
+    <div className="rounded-xl border">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -77,6 +92,26 @@ export function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
+      <div className="pagination-controls">
+        <button
+          onClick={() => {table.previousPage(); setCurrentPage(currentPage - 1);}}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Prev
+        </button>
+        <span>
+          <strong>
+            {currentPage} of {table.getPageCount()}
+          </strong>
+        </span>
+        <button
+          onClick={() => {table.nextPage(); setCurrentPage(currentPage + 1);}}
+          disabled={!table.getCanNextPage()}
+        >
+          Next
+        </button>
+
+      </div>
     </div>
   );
 }

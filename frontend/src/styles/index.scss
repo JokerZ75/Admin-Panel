@@ -266,3 +266,39 @@ body {
         transform: scale(1.2);
     }
 }
+
+.card-body-table {
+  font-size: 1.2rem;
+  max-width: 20rem;
+  min-width: 15rem;
+  width: 100%;
+  margin: 1rem;
+  margin-bottom: 0;
+  max-height: 375px;
+  overflow: scroll;
+
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 0.2rem;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.pagination-controls button {
+  background-color: var(--cardBackgrounds);
+  color: var(--text);
+  border: 0.1rem solid var(--text);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+
+    &:hover {
+        background-color: var(--text);
+        color: var(--cardBackgrounds);
+    }
+}
