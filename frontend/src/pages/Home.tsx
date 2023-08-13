@@ -9,6 +9,7 @@ import {
   columns as upcomingShipmentsColumns,
 } from "../components/Data-table-Columns/UpcomingShipments";
 import { DataTable } from "../components/ui/data-table-shipmentOrder";
+import Cards from "../components/ui/Card";
 
 async function getOrders(): Promise<RecentOrder[]> {
   return [
@@ -111,42 +112,20 @@ const index = () => {
         <div id="heading">
           <h1>Dashboard</h1>
         </div>
-        <div id="cards-holder">
-          <div className="card">
-            <div className="card-heading">
-              <h2>Sales Graph</h2>
-            </div>
-            <div className="card-body-graph">
-              <Graph />
-            </div>
+        <Cards>
+          <div id="Graph" title="Sales Graph">
+            <Graph />
           </div>
-          <div className="card">
-            <div className="card-heading">
-              <h2>Recent Orders</h2>
-            </div>
-            <div className="card-body-table">
-              <DataTable type="order" columns={columns} data={data} />
-            </div>
+          <div title="Recent Orders">
+            <DataTable columns={columns} data={data} type="order" />
           </div>
-          <div className="card">
-            <div className="card-heading">
-              <h2>Upcoming Shipments</h2>
-            </div>
-            <div className="card-body-table">
-              <DataTable
-                type="shipment"
-                columns={upcomingShipmentsColumns}
-                data={UpcomingShipments}
-              />
-            </div>
+          <div title="Upcoming Shipments">
+            <DataTable columns={upcomingShipmentsColumns} data={UpcomingShipments} type="shipment" />
           </div>
-          <div id="money-in" className="card">
-            <div className="card-heading">
-              <h2>Total Money In</h2>
-            </div>
-            <div className="card-body"></div>
-          </div>
-        </div>
+          <div title="Total Money In"></div>
+          <div title="Total Orders"></div>
+          <div title="Best Seller"></div>
+        </Cards>
       </div>
     </>
   );

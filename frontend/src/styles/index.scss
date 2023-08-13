@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap");
 
 :root {
   --text: #29155b;
@@ -6,7 +6,7 @@
   --cardBackgrounds: #d9a0f2;
   --Purple1: #d26ce2;
   --Purple2: #c43dd7;
-  font-family: 'Josefin Sans', sans-serif;
+  font-family: "Josefin Sans", sans-serif;
 }
 
 .light-mode {
@@ -100,9 +100,9 @@ body {
   margin: 0.28rem 0;
   display: block;
 
-    &:first-child {
-        margin-top: 0;
-    }
+  &:first-child {
+    margin-top: 0;
+  }
 }
 
 #navbar {
@@ -126,41 +126,40 @@ body {
   font-size: 1.2rem;
   margin-top: 0.9rem;
 
-    &:first-child {
-        margin-top: 0.5rem;
-    }
+  &:first-child {
+    margin-top: 0.5rem;
+  }
 
-    &:last-child{
-        margin-bottom: 1rem;
-    }
+  &:last-child {
+    margin-bottom: 1rem;
+  }
 }
 
 .link-text {
- display: inline;
+  display: inline;
   margin-left: 1rem;
   border-bottom: var(--cardBackgrounds) 0.1rem solid;
 
-    &:hover {
-        border-bottom: var(--text) 0.1rem solid;
-        color: var(--cardBackgrounds);
-    }
+  &:hover {
+    border-bottom: var(--text) 0.1rem solid;
+    color: var(--cardBackgrounds);
+  }
 }
 
 #nav-top-items {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
-
 #theme-toggle {
-    margin-left: auto;
-    margin-right: 1rem;
-    cursor: pointer;
+  margin-left: auto;
+  margin-right: 1rem;
+  cursor: pointer;
 
-    & .link-text {
-        margin-left: 0;
-        font-size: 2rem;
-    }
+  & .link-text {
+    margin-left: 0;
+    font-size: 2rem;
+  }
 }
 #heading {
   font-size: 2rem;
@@ -176,45 +175,49 @@ body {
   }
 }
 
-#cards-holder{
+#cards-holder {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   margin: 1rem;
-}
 
-.card {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: 1rem;
-  padding: 0.5rem;
-  background-color: var(--cardBackgrounds);
-  box-shadow: 0 0 0.5rem var(--text);
-  border-radius: 0.5rem;
-  max-width: 20rem;
-  min-width: 15rem;
-  width: 100%;
-  transition: all 0.5s ease-in-out;
+  & > .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem;
+    padding: 0.5rem;
+    background-color: var(--cardBackgrounds);
+    box-shadow: 0 0 0.5rem var(--text);
+    border-radius: 0.5rem;
+    max-width: 20rem;
+    min-width: 15rem;
+    width: 100%;
+    transition: all 0.5s ease-in-out;
 
     &:hover {
-        transform: scale(1.05);
+      transform: scale(1.05);
     }
 
-}
-.card-heading {
-  font-size: 1.3rem;
-  margin-bottom: 0.5rem;
+    & > .card-heading {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    & #Graph {
+      height: 18rem;
+      width: 18rem;
+    }
+
+    & > .card-body {
+      max-width: 18rem;
+    }
+  }
 }
 
-.card-body-graph {
-  font-size: 1.2rem;
-  width: 100%;
-  height: 400px;
-}
 #colorLine stop {
   stop-color: var(--text);
 }
@@ -230,6 +233,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 0.5rem;
   background-color: var(--background);
   color: var(--text);
   margin: 1rem;
@@ -246,14 +250,14 @@ body {
   text-align: center;
   margin-bottom: 0.5rem;
 }
-.social-icons{
+.social-icons {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-bottom: 0.5rem;
   color: var(--text);
 }
-.social-icon{
+.social-icon {
   margin: 0.5rem;
   font-size: 2rem;
   cursor: pointer;
@@ -262,22 +266,9 @@ body {
   color: var(--text);
   text-align: center;
 
-    &:hover {
-        transform: scale(1.2);
-    }
-}
-
-.card-body-table {
-  font-size: 1.2rem;
-  max-width: 20rem;
-  min-width: 15rem;
-  width: 100%;
-  margin: 1rem;
-  margin-top: 0;
-  margin-bottom: 0;
-  max-height: 375px;
-  overflow: scroll;
-
+  &:hover {
+    transform: scale(1.2);
+  }
 }
 
 .pagination-controls {
@@ -298,10 +289,10 @@ body {
   cursor: pointer;
   transition: all 0.5s ease-in-out;
 
-    &:hover {
-        background-color: var(--text);
-        color: var(--cardBackgrounds);
-    }
+  &:hover {
+    background-color: var(--text);
+    color: var(--cardBackgrounds);
+  }
 }
 
 .filter-input {
@@ -310,35 +301,35 @@ body {
   padding: 0.5rem;
   color: var(--text);
 
-    & select{
-      margin-left: 0.5rem;
-      background-color: var(--cardBackgrounds);
-      color: var(--text);
-      border: 0.1rem solid var(--text);
-      border-radius: 0.5rem;
-      padding: 0.5rem;
-      transition: all 0.5s ease-in-out;
+  & select {
+    margin-left: 0.5rem;
+    background-color: var(--cardBackgrounds);
+    color: var(--text);
+    border: 0.1rem solid var(--text);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    transition: all 0.5s ease-in-out;
 
-        &:focus {
-            outline: none;
-            background-color: var(--text);
-            color: var(--cardBackgrounds);
-        }
+    &:focus {
+      outline: none;
+      background-color: var(--text);
+      color: var(--cardBackgrounds);
     }
+  }
 
-    & button {
-      margin-left: 0.5rem;
-      background-color: var(--cardBackgrounds);
-      color: var(--text);
-      border: 0.1rem solid var(--text);
-      border-radius: 0.5rem;
-      padding: 0.3rem;
-      cursor: pointer;
-      transition: all 0.5s ease-in-out;
+  & button {
+    margin-left: 0.5rem;
+    background-color: var(--cardBackgrounds);
+    color: var(--text);
+    border: 0.1rem solid var(--text);
+    border-radius: 0.5rem;
+    padding: 0.3rem;
+    cursor: pointer;
+    transition: all 0.5s ease-in-out;
 
-        &:hover {
-            background-color: var(--text);
-            color: var(--cardBackgrounds);
-        }
+    &:hover {
+      background-color: var(--text);
+      color: var(--cardBackgrounds);
     }
+  }
 }

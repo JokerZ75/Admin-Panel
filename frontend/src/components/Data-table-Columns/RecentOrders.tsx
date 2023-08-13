@@ -20,6 +20,10 @@ export const columns: ColumnDef<RecentOrder>[] = [
     accessorKey: "name",
   },
   {
+    header: "Email",
+    accessorKey: "email",
+  },
+  {
     accessorKey: "status",
     header: "Status",
   },

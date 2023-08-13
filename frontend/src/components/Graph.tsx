@@ -68,7 +68,7 @@ const Graph: FC<graphProps> = ({ dataS }) => {
 
   return (
     <>
-      <ResponsiveContainer width="100%" height="80%">
+      <ResponsiveContainer width="100%" height="80%"> 
         <AreaChart
           data={data}
           margin={{
