@@ -126,9 +126,16 @@ const index = () => {
               type="shipment"
             />
           </div>
-          <div title="Total Money In"><p>1023000000000</p></div>
-          <div title="Total Orders"></div>
-          <div title="Best Seller">Hello</div>
+          <div title="Total Money In">
+            <p className="card-text">£2000</p>
+          </div>
+          <div title="Total Orders">
+            <p className="card-text">10 Products</p>
+          </div>
+          <div title="Best Seller">
+            <p className="card-text">Product 1</p>
+            <img src="" alt="image of product" />
+          </div>
         </Cards>
       </div>
     </>

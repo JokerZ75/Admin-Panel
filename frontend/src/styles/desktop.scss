@@ -37,10 +37,7 @@
 
   .cards-holder {
     display: block;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: flex-start;
+    width: auto;
     margin: 1rem;
     padding: 0.5rem;
 
@@ -55,20 +52,29 @@
       height: auto;
       max-height: none;
 
+      & > .card-heading {
+        font-size: 1.5rem;
+        text-align: center;
+        margin: 0.5rem;
+      }
+
       & > .card-body {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
         width: auto;
         max-width: none;
         min-width: none;
         height: auto;
         max-height: none;
+        font-size: 1.3rem;
+
+
 
         & #Graph {
           height: 25rem;
-          width: 30rem;
+          width: 35rem;
         }
       }
     }
