@@ -35,17 +35,23 @@
     margin-left: 1rem;
   }
 
-  #cards-holder {
-    display: flex;
+  .cards-holder {
+    display: block;
     flex-direction: row;
     flex-wrap: wrap;
-    margin: 1rem 3rem 1rem 0rem;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin: 1rem;
+    padding: 0.5rem;
+
 
     & > .card {
-      margin: 1rem;
+      margin: 0.6rem;
+      display: inline;
       width: auto;
       max-width: none;
-      min-width: none;
+      float: left;
+      min-width: 5rem;
       height: auto;
       max-height: none;
 
@@ -68,9 +74,15 @@
     }
   }
 
+  footer {
+    display: block;
+    float: left;
+    width: 100%;
+  }
+
   #footer {
     display: grid;
-    grid-template-columns: 28% 28% 28%;
+    grid-template-columns: 20% 20% 20%;
     grid-template-rows: 200px;
     grid-gap: 2rem;
     margin: 1rem;

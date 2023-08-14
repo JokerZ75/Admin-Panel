@@ -120,11 +120,15 @@ const index = () => {
             <DataTable columns={columns} data={data} type="order" />
           </div>
           <div title="Upcoming Shipments">
-            <DataTable columns={upcomingShipmentsColumns} data={UpcomingShipments} type="shipment" />
+            <DataTable
+              columns={upcomingShipmentsColumns}
+              data={UpcomingShipments}
+              type="shipment"
+            />
           </div>
-          <div title="Total Money In"></div>
+          <div title="Total Money In"><p>1023000000000</p></div>
           <div title="Total Orders"></div>
-          <div title="Best Seller"></div>
+          <div title="Best Seller">Hello</div>
         </Cards>
       </div>
     </>

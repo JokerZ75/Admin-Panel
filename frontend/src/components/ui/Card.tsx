@@ -23,7 +23,7 @@ const Card: FC<CardProps> = ({ title, children }) => {
 
 const Cards: FC<CardsProps> = ({ children }) => {
   return (
-    <div id="cards-holder">
+    <div className="cards-holder">
       {children?.map((child:any, index:number) => {
         return <Card key={index} title={child?.props.title}>{child}</Card>;
       })}
