@@ -1,12 +1,12 @@
 import Cards from "@/components/ui/Card";
 import React from "react";
 
-const Profile = () => {
+const Shipments = () => {
   return (
     <>
       <div id="main-content-container">
         <div id="heading">
-          <h1>Profile</h1>
+          <h1>Shipments</h1>
         </div>
         <Cards>
         </Cards>
@@ -14,5 +14,4 @@ const Profile = () => {
     </>
   );
 };
-
-export default Profile;
+export default Shipments;

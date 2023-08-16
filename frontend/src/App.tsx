@@ -6,7 +6,7 @@ import { DarkModeProvider } from "./lib/context/darkModeContext";
 
 
 const Orders = lazy(() => import("./pages/Orders"));
-const Graphs = lazy(() => import("./pages/Graphs"));
+const Shipments = lazy(() => import("./pages/Shipments"));
 const Profile = lazy(() => import("./pages/Profile"));
 
 const router = createBrowserRouter([
@@ -15,7 +15,7 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <Home /> },
       { path: "/orders", element: <Orders /> },
-      { path: "/graphs", element: <Graphs /> },
+      { path: "/shipments", element: <Shipments /> },
       { path: "/profile", element: <Profile /> },
     ],
   },

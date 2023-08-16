@@ -214,11 +214,19 @@ header {
 
     & #Graph {
       height: 18rem;
-      width: 18rem;
+      width: 100%;
+      max-width: 25;
+      min-width: 18rem;
     }
 
     &-body {
-      max-width: 18rem;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      width: 100%;
+      & div:first-child {
+        width: 100%;
+      }
     }
 
     &-text {
