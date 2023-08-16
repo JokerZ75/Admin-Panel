@@ -77,8 +77,13 @@ body {
   }
 }
 
+header {
+  position: sticky;
+  top: 1rem;
+  z-index: 10;
+}
+
 #nav-container {
-  position: static;
   display: flex;
   flex-direction: column;
   padding: 0.5rem;
@@ -242,7 +247,6 @@ body {
   background-color: var(--background);
   color: var(--text);
   margin: 1rem;
-  box-shadow: 0 0 0.5rem var(--text);
 }
 .footer-heading {
   font-size: 1.5rem;
