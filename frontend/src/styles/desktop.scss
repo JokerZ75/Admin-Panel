@@ -36,34 +36,36 @@
   }
 
   .cards-holder {
-    display: block;
-    width: auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     margin: 1rem;
     padding: 0.5rem;
 
 
-    & > .card {
+    & .card {
+      flex: 1 1 25rem;
+      align-items: flex-start;
+      justify-content: flex-start;
       margin: 0.6rem;
-      display: inline;
-      width: auto;
-      max-width: none;
-      float: left;
       min-width: 5rem;
+      max-width: none;
+      align-self: stretch;
+      width: auto;
       height: auto;
       max-height: none;
-
-      & > .card-heading {
+      min-height: 5rem;
+      &-heading {
         font-size: 1.5rem;
         text-align: center;
         margin: 0.5rem;
       }
 
-      & > .card-body {
+      &-body {
         display: flex;
         flex-direction: row;
         justify-content: center;
-        align-items: center;
-        width: auto;
+        width: 100%;
         max-width: none;
         min-width: none;
         height: auto;
@@ -73,8 +75,11 @@
 
 
         & #Graph {
-          height: 25rem;
-          width: 35rem;
+          font-size: 1.3rem;
+          height: 30rem;
+          width: 100%;
+          max-width: 35rem;
+          min-width: 20rem;
         }
       }
     }

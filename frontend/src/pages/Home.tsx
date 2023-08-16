@@ -77,33 +77,10 @@ async function getOrders(): Promise<RecentOrder[]> {
   ];
 }
 
-async function getUpcomingShipments(): Promise<UpcomingShipments[]> {
-  return [
-    {
-      id: "1",
-      name: "John Doe",
-      status: "shipped",
-      address: "123 Fake Street",
-    },
-    {
-      id: "2",
-      name: "Jane Doe",
-      status: "pending",
-      address: "123 Fake Street",
-    },
-  ];
-}
-
 const index = () => {
   const [data, setData] = useState<RecentOrder[]>([]);
-  const [UpcomingShipments, setUpcomingShipments] = useState<
-    UpcomingShipments[]
-  >([]);
   useMemo(() => {
     getOrders().then((orders: RecentOrder[]) => setData(orders));
-    getUpcomingShipments().then((shipments: UpcomingShipments[]) =>
-      setUpcomingShipments(shipments)
-    );
   }, []);
 
   return (
@@ -113,19 +90,6 @@ const index = () => {
           <h1>Dashboard</h1>
         </div>
         <Cards>
-          <div id="Graph" title="Sales Graph">
-            <Graph />
-          </div>
-          <div title="Recent Orders">
-            <DataTable columns={columns} data={data} type="order" />
-          </div>
-          <div title="Upcoming Shipments">
-            <DataTable
-              columns={upcomingShipmentsColumns}
-              data={UpcomingShipments}
-              type="shipment"
-            />
-          </div>
           <div title="Total Money In">
             <p className="card-text">£2000</p>
           </div>
@@ -135,6 +99,12 @@ const index = () => {
           <div title="Best Seller">
             <p className="card-text">Product 1</p>
             <img src="" alt="image of product" />
+          </div>
+          <div id="Graph" title="Sales Graph">
+            <Graph />
+          </div>
+          <div title="Recent Orders">
+            <DataTable columns={columns} data={data} type="order" />
           </div>
         </Cards>
       </div>
