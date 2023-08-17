@@ -44,22 +44,23 @@
     margin: 0.5rem;
     padding: 0.5rem;
 
-
     & .card {
-      flex: 1 1 25rem;
+      flex: 1 1 30rem;
       align-items: flex-start;
       justify-content: flex-start;
       margin: 0.6rem;
-
       align-self: stretch;
       &-heading {
-        font-size: 1.5rem;
+        font-size: 2rem;
         text-align: center;
         margin: 0.5rem;
       }
 
       &-body {
         font-size: 1.3rem;
+        margin-top: auto;
+        margin-bottom: auto;
+
         & #Graph {
           font-size: 1.3rem;
           height: 30rem;
@@ -70,7 +71,6 @@
     }
   }
 
-
   #footer {
     display: grid;
     grid-template-columns: 20% 20% 20%;
@@ -78,5 +78,22 @@
     grid-gap: 2rem;
     margin: 1rem;
     padding: 0;
+  }
+
+  form {
+    margin: 1rem;
+
+    & div {
+      grid-template-columns: 0.5fr 1fr;
+      grid-gap: 1rem;
+    }
+
+    & div :is(label, input, select) {
+      width: 100%;
+    }
+
+    & input[type="submit"] {
+      width: 100%;
+    }
   }
 }

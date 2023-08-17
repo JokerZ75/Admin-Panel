@@ -23,6 +23,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import { useMediaQuery } from "@mui/material";
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -38,6 +40,7 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
+  const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
     data,
@@ -48,19 +51,36 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    onRowSelectionChange: setRowSelection,
+
     state: {
       sorting,
       columnFilters,
+      rowSelection,
     },
     initialState: {
       pagination: {
         pageIndex: 0,
         pageSize: 5,
       },
-    },
+    }
   });
 
   const [currentPage, setCurrentPage] = React.useState(1);
+
+  const isMobile = useMediaQuery("(max-width: 768px)");
+
+  React.useEffect(() => {
+
+    if (isMobile) {
+      table.setPageSize(4);
+    } else {
+      table.setPageSize(8);
+    }
+    
+  }, [isMobile]);
+
+  
 
   return (
     <div className="rounded-xl border">

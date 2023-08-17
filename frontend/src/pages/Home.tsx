@@ -4,11 +4,7 @@ import {
   columns,
   RecentOrder,
 } from "../components/Data-table-Columns/RecentOrders";
-import {
-  UpcomingShipments,
-  columns as upcomingShipmentsColumns,
-} from "../components/Data-table-Columns/UpcomingShipments";
-import { DataTable } from "../components/ui/data-table-shipmentOrder";
+import { DataTable } from "../components/ui/data-table";
 import Cards from "../components/ui/Card";
 
 async function getOrders(): Promise<RecentOrder[]> {
@@ -83,6 +79,7 @@ const index = () => {
     getOrders().then((orders: RecentOrder[]) => setData(orders));
   }, []);
 
+
   return (
     <>
       <div id="main-content-container">
@@ -91,13 +88,13 @@ const index = () => {
         </div>
         <Cards>
           <div title="Total Money In">
-            <p className="card-text">£2000</p>
+            <p className="card-text-large">£2000</p>
           </div>
           <div title="Total Orders">
-            <p className="card-text">10 Products</p>
+            <p className="card-text-large">4000</p>
           </div>
           <div title="Best Seller">
-            <p className="card-text">Product 1</p>
+            <p className="card-text-large">Product 1</p>
             <img src="" alt="image of product" />
           </div>
           <div id="Graph" title="Sales Graph">

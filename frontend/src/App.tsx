@@ -4,7 +4,6 @@ import { Home } from "./pages";
 import Layout from "./components/Layout";
 import { DarkModeProvider } from "./lib/context/darkModeContext";
 
-
 const Orders = lazy(() => import("./pages/Orders"));
 const Shipments = lazy(() => import("./pages/Shipments"));
 const Profile = lazy(() => import("./pages/Profile"));
