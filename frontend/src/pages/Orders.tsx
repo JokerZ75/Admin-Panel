@@ -1,24 +1,25 @@
 import Cards from "@/components/ui/Card";
 import React, { useMemo, useState } from "react";
-import {
-  columns,
-  Order,
-} from "../components/Data-table-Columns/OrdersPage";
-import { DataTable } from "../components/ui/data-table";
+import { columns, Order } from "../components/Data-table-Columns/OrdersPage";
+import { DataTable } from "../components/ui/data-table-orders";
+import { Form, Input, Select } from "../components/ui/Form";
+import { useFieldArray, useForm } from "react-hook-form";
 
 async function getOrders(): Promise<Order[]> {
   return [
     {
       id: "1",
       name: "John Doe",
-      status: "success",
+      status: "Success",
       amount: 100,
+      email: "John@email.com",
     },
     {
       id: "2",
       name: "Jane Doe",
-      status: "pending",
+      status: "Pending",
       amount: 100,
+      email: "Jane@email.com",
     },
     {
       id: "3",
@@ -74,11 +75,38 @@ async function getOrders(): Promise<Order[]> {
 
 const Orders = () => {
   const [data, setData] = useState<Order[]>([]);
+  const [selectedRow, setSelectedRow] = useState<Order>({} as Order);
+  const [selctedRowNumber, setSelectedRowNumber] = useState<number>(0);
   useMemo(() => {
     getOrders().then((orders: Order[]) => setData(orders));
   }, []);
 
-  React.useEffect(() => {}, [data]);
+  const { register, control, handleSubmit, setValue } = useForm({});
+
+  React.useEffect(() => {
+    console.log(selectedRow);
+    if (selectedRow.name) {
+      setValue("id", selectedRow.id);
+      setValue("name", selectedRow.name);
+      setValue("email", selectedRow.email);
+      setValue("address", selectedRow.address);
+      setValue("phone", selectedRow.phone);
+      setValue("products", selectedRow.products);
+      setValue("amount", selectedRow.amount);
+      setValue("status", selectedRow.status);
+      setValue("shipped", selectedRow.shipped);
+    } else {
+      setValue("id", "");
+      setValue("name", "");
+      setValue("email", "");
+      setValue("address", "");
+      setValue("phone", "");
+      setValue("products", "");
+      setValue("amount", "");
+      setValue("status", "");
+      setValue("shipped", "");
+    }
+  }, [selectedRow]);
 
   return (
     <>
@@ -93,91 +121,178 @@ const Orders = () => {
           <div title="Total Orders">
             <p className="card-text-large">4000</p>
           </div>
-          <div title="Orders Shipped">
-            <p className="card-text-large">3750</p>
-          </div>
-          <div title="Create Order">
-            <p className="card-text">
-              <form id="order-form">
-                <div>
-                  <label htmlFor="id">ID</label>
-                  <input type="text" name="id" id="id" placeholder="1" />
-                </div>
-                <div>
-                  <label htmlFor="name">Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    id="name"
+          {selectedRow.name ? (
+            <div title="Update Order (Unselect to Create)">
+              <p className="card-text">
+                <Form
+                  id="order-form"
+                  onSubmit={handleSubmit((formValues) => {
+                    // @ts-expect-error
+                    event.preventDefault();
+                    console.log(formValues);
+                  })}
+                >
+                  <Input
+                    For="id"
+                    Label="ID"
+                    placeholder="Leave Blank to Auto Generate"
+                    Type="text"
+                    register={register("id")}
+                  />
+                  <Input
+                    For="name"
+                    Label="Name"
                     placeholder="John Doe"
+                    Type="text"
+                    register={register("name")}
+                    required={true}
                   />
-                </div>
-                <div>
-                  <label htmlFor="email">Email</label>
-                  <input
-                    type="text"
-                    name="email"
-                    id="email"
+                  <Input
+                    For="email"
+                    Label="Email"
                     placeholder="John@email.com"
+                    Type="text"
+                    register={register("email")}
+                    required={true}
                   />
-                </div>
-                <div>
-                  <label htmlFor="address">Address</label>
-                  <input
-                    type="text"
-                    name="address"
-                    id="address"
+                  <Input
+                    For="address"
+                    Label="Address"
                     placeholder="22 Combine St"
+                    Type="text"
+                    register={register("address")}
+                    required={true}
                   />
-                </div>
-                <div>
-                  <label htmlFor="phone">Phone</label>
-                  <input
-                    type="text"
-                    name="phone"
-                    id="phone"
+                  <Input
+                    For="phone"
+                    Label="Phone"
                     placeholder="07575 39281"
+                    Type="text"
+                    register={register("phone")}
+                    required={true}
                   />
-                </div>
-                <div>
-                  <label htmlFor="products">Products</label>
-                  <input
-                    type="text"
-                    name="products"
-                    id="products"
+                  <Input
+                    For="products"
+                    Label="Products"
                     placeholder="2x Eggs, 3x Item"
+                    Type="text"
+                    register={register("products")}
+                    required={true}
                   />
-                </div>
-                <div>
-                  <label htmlFor="Amount">Amount</label>
-                  <input
-                    type="number"
-                    name="Amount"
-                    id="Amount"
+                  <Input
+                    For="Amount"
+                    Label="Amount"
                     placeholder="£200"
+                    Type="number"
+                    register={register("amount")}
+                    required={true}
                   />
-                </div>
-                <div>
-                  <label htmlFor="status">Status</label>
-                  <select name="status" id="status">
-                    <option value="success">Success</option>
-                    <option value="pending">Pending</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="shipped">Shipped</label>
-                  <select name="shipped" id="shipped">
-                    <option value="yes">shipped</option>
-                    <option value="no">pending</option>
-                  </select>
-                </div>
-                <input type="submit" />
-              </form>
-            </p>
-          </div>
+                  <Select
+                    For="status"
+                    Label="Status"
+                    Options={["Success", "Pending", "Cancelled"]}
+                    register={register("status")}
+                  />
+                  <Select
+                    For="shipped"
+                    Label="Shipped"
+                    Options={["Shipped", "Pending"]}
+                    register={register("shipped")}
+                  />
+                  <input type="submit" />
+                </Form>
+              </p>
+            </div>
+          ) : (
+            <div title="Create Order (Select From Table to Update)">
+              <p className="card-text">
+                <Form
+                  id="order-form"
+                  onSubmit={handleSubmit((formValues) => {
+                    // @ts-expect-error
+                    event.preventDefault();
+                    console.log(formValues);
+                  })}
+                >
+                  <Input
+                    For="id"
+                    Label="ID"
+                    placeholder="Leave Blank to Auto Generate"
+                    Type="text"
+                    register={register("id")}
+                  />
+                  <Input
+                    For="name"
+                    Label="Name"
+                    placeholder="John Doe"
+                    Type="text"
+                    register={register("name")}
+                    required={true}
+                  />
+                  <Input
+                    For="email"
+                    Label="Email"
+                    placeholder="John@email.com"
+                    Type="text"
+                    register={register("email")}
+                    required={true}
+                  />
+                  <Input
+                    For="address"
+                    Label="Address"
+                    placeholder="22 Combine St"
+                    Type="text"
+                    register={register("address")}
+                    required={true}
+                  />
+                  <Input
+                    For="phone"
+                    Label="Phone"
+                    placeholder="07575 39281"
+                    Type="text"
+                    register={register("phone")}
+                    required={true}
+                  />
+                  <Input
+                    For="products"
+                    Label="Products"
+                    placeholder="2x Eggs, 3x Item"
+                    Type="text"
+                    register={register("products")}
+                    required={true}
+                  />
+                  <Input
+                    For="Amount"
+                    Label="Amount"
+                    placeholder="£200"
+                    Type="number"
+                    register={register("amount")}
+                    required={true}
+                  />
+                  <Select
+                    For="status"
+                    Label="Status"
+                    Options={["Success", "Pending", "Cancelled"]}
+                    register={register("status")}
+                  />
+                  <Select
+                    For="shipped"
+                    Label="Shipped"
+                    Options={["Shipped", "Pending"]}
+                    register={register("shipped")}
+                  />
+                  <input type="submit" />
+                </Form>
+              </p>
+            </div>
+          )}
           <div title="Orders">
-            <DataTable columns={columns} data={data} type="order" />
+            <DataTable
+              columns={columns}
+              data={data}
+              setRow={setSelectedRow}
+              setRowNumber={setSelectedRowNumber}
+            />
           </div>
         </Cards>
       </div>

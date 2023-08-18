@@ -12,8 +12,8 @@ export type Order = {
   phone: string;
   products: string;
   amount: number;
-  status: "success" | "pending" | "cancelled";
-  shipped: "shipped" | "pending";
+  status: "Success" | "Pending" | "Cancelled";
+  shipped: "Shipped" | "Pending";
 };
 
 export const columns: ColumnDef<Order>[] = [

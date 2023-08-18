@@ -1,17 +1,13 @@
-// @ts-ignore
 "use client";
-import React from "react";
 
 import {
   ColumnDef,
+  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
-  getPaginationRowModel,
-  SortingState,
-  getSortedRowModel,
-  useReactTable,
-  ColumnFiltersState,
   getFilteredRowModel,
+  getPaginationRowModel,
+  useReactTable,
 } from "@tanstack/react-table";
 
 import {
@@ -22,21 +18,24 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import { useMediaQuery } from "@mui/material";
+import React from "react";
+import { Input } from "./input";
+import { Order } from "../Data-table-Columns/OrdersPage";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  type: "shipment" | "order";
+  setRow: React.Dispatch<React.SetStateAction<Order>>;
+  setRowNumber: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export function DataTable<TData, TValue>({
+function DataTable<TData, TValue>({
   columns,
   data,
-  type,
+  setRow,
+  setRowNumber,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -47,17 +46,15 @@ export function DataTable<TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    onColumnFiltersChange: setColumnFilters,
     onRowSelectionChange: setRowSelection,
 
     state: {
-      sorting,
       columnFilters,
       rowSelection,
     },
+
     initialState: {
       pagination: {
         pageIndex: 0,
@@ -65,6 +62,16 @@ export function DataTable<TData, TValue>({
       },
     },
   });
+
+  React.useEffect(() => {
+    const rows = table.getRowModel().rows;
+    const selectedRows = rows.filter((row) => row.getIsSelected());
+    if (selectedRows.length === 1) {
+      setRow(selectedRows[0]._valuesCache as Order);
+    } else {
+      setRow({} as Order);
+    }
+  }, [rowSelection]);
 
   const [currentPage, setCurrentPage] = React.useState(1);
 
@@ -79,38 +86,18 @@ export function DataTable<TData, TValue>({
   }, [isMobile]);
 
   return (
-    <div className="rounded-xl border">
-      <div className="filter-input">
-        <select
-          name=""
-          id=""
-          value={(table.getColumn("status")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => {
-            table.getColumn("status")?.setFilterValue(event.target.value);
-            setCurrentPage(1);
-          }}
-        >
-          <option value="">Filter Status</option>
-          {type === "shipment" ? (
-            <option value="Shipped">Shipped</option>
-          ) : (
-            <option value="Success">Success</option>
-          )}
-          <option value="Pending">Pending</option>
-          <option value="Cancelled">Cancelled</option>
-        </select>
-        {table.getColumn("status")?.getFilterValue() && (
-          <button
-            onClick={() => {
-              table.getColumn("status")?.setFilterValue("");
-              setCurrentPage(1);
-            }}
-          >
-            Clear
-          </button>
-        )}
+    <div className="rounded-xl m-1 border">
+      <div className="flex items-center ml-2 py-4">
+        <Input
+          placeholder="Filter emails..."
+          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("email")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
       </div>
-      <Table id="table-el">
+      <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
@@ -182,3 +169,5 @@ export function DataTable<TData, TValue>({
     </div>
   );
 }
+
+export { DataTable };

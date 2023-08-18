@@ -31,7 +31,6 @@ const Navbar: FC = () => {
         <nav id="navbar" ref={navbar}>
           <Link className="link" to={"/"}><h1 className="link-text">Dashboard</h1></Link>
           <Link className="link" to={"/orders"}><h1 className="link-text">Orders</h1></Link>
-          <Link className="link" to={"/shipments"}><h1 className="link-text">Shipments</h1></Link>
           <Link className="link" to={"/profile"}><h1 className="link-text">Profile</h1></Link>
         </nav>
       </div>
