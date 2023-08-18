@@ -83,7 +83,6 @@ const Orders = () => {
   const { register, control, handleSubmit, setValue } = useForm({});
 
   React.useEffect(() => {
-    console.log(selectedRow);
     if (selectedRow.name) {
       setValue("id", selectedRow.id);
       setValue("name", selectedRow.name);
