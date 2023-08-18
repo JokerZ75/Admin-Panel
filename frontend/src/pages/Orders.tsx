@@ -1,7 +1,7 @@
 import Cards from "@/components/ui/Card";
 import React, { useMemo, useState } from "react";
 import { columns, Order } from "../components/Data-table-Columns/OrdersPage";
-import { DataTable } from "../components/ui/data-table-orders";
+import { DataTable } from "../components/data-table-orders";
 import { Form, Input, Select } from "../components/ui/Form";
 import { useFieldArray, useForm } from "react-hook-form";
 
@@ -76,7 +76,6 @@ async function getOrders(): Promise<Order[]> {
 const Orders = () => {
   const [data, setData] = useState<Order[]>([]);
   const [selectedRow, setSelectedRow] = useState<Order>({} as Order);
-  const [selctedRowNumber, setSelectedRowNumber] = useState<number>(0);
   useMemo(() => {
     getOrders().then((orders: Order[]) => setData(orders));
   }, []);
@@ -291,7 +290,6 @@ const Orders = () => {
               columns={columns}
               data={data}
               setRow={setSelectedRow}
-              setRowNumber={setSelectedRowNumber}
             />
           </div>
         </Cards>

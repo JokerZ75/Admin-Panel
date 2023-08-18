@@ -20,21 +20,20 @@ import {
 } from "@/components/ui/table";
 import { useMediaQuery } from "@mui/material";
 import React from "react";
-import { Input } from "./input";
-import { Order } from "../Data-table-Columns/OrdersPage";
+import { Input } from "./ui/input";
+import { Order } from "./Data-table-Columns/OrdersPage";
+import index from '../pages/Home';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   setRow: React.Dispatch<React.SetStateAction<Order>>;
-  setRowNumber: React.Dispatch<React.SetStateAction<number>>;
 }
 
 function DataTable<TData, TValue>({
   columns,
   data,
   setRow,
-  setRowNumber,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -63,15 +62,22 @@ function DataTable<TData, TValue>({
     },
   });
 
+  const [previousRow, setPreviousRow] = React.useState<any>(null);
+
   React.useEffect(() => {
     const rows = table.getRowModel().rows;
     const selectedRows = rows.filter((row) => row.getIsSelected());
+    console.log(selectedRows);
     if (selectedRows.length === 1) {
+      setPreviousRow(selectedRows[0]);
       setRow(selectedRows[0]._valuesCache as Order);
-    } else {
+    } else if (selectedRows.length > 1) {
+      previousRow.toggleSelected();
+    } 
+    else {
       setRow({} as Order);
     }
-  }, [rowSelection]);
+  }, [rowSelection, previousRow]);
 
   const [currentPage, setCurrentPage] = React.useState(1);
 
@@ -85,6 +91,14 @@ function DataTable<TData, TValue>({
     }
   }, [isMobile]);
 
+  const clearRowSelection = () => {
+    const selectedRows = table
+      .getRowModel()
+      .rows.filter((row) => row.getIsSelected());
+    selectedRows.forEach((row) => row.toggleSelected());
+    setRow({} as Order);
+  };
+
   return (
     <div className="rounded-xl m-1 border">
       <div className="flex items-center ml-2 py-4">
@@ -96,6 +110,12 @@ function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
+        {table.getRowModel().rows?.filter((row) => row.getIsSelected()).length >
+          0 && (
+          <div className="ml-auto mr-8">
+            <button onClick={() => clearRowSelection()}>Clear Select</button>
+          </div>
+        )}
       </div>
       <Table>
         <TableHeader>
