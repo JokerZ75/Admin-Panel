@@ -112,7 +112,7 @@ function DataTable<TData, TValue>({
         />
         {table.getRowModel().rows?.filter((row) => row.getIsSelected()).length >
           0 && (
-          <div className="ml-auto mr-8">
+          <div className="ml-auto mr-8 filter-input">
             <button onClick={() => clearRowSelection()}>Clear Select</button>
           </div>
         )}
