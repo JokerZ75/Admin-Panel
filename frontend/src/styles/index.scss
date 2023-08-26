@@ -27,6 +27,21 @@
   transition: all 0.5s ease-in-out;
 }
 
+@mixin buttonMix {
+  background-color: var(--cardBackgrounds);
+  color: var(--text);
+  border: 0.1rem solid var(--text);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+
+  &:hover {
+    background-color: var(--text);
+    color: var(--cardBackgrounds);
+  }
+}
+
 body {
   background-color: var(--background);
   color: var(--text);
@@ -212,35 +227,50 @@ header {
       margin-bottom: 0.5rem;
     }
 
-    & #Graph {
-      height: 18rem;
-      width: 100%;
-      max-width: 25;
-      min-width: 18rem;
-    }
-
     &-body {
       display: flex;
-      flex-direction: row;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
       width: 100%;
       & div:first-child {
         width: 100%;
+      }
+      &#Graph {
+        height: 18rem;
+        width: 100%;
+        max-width: 25;
+        min-width: 18rem;
       }
     }
 
     &-text {
       width: 100%;
-      text-align: center;
       &-large {
         text-align: center;
         font-size: 5rem;
         font-size: clamp(1.8rem, 5vw, 5rem);
-        display: flex;
-        justify-content: center;
-        align-items: center;
       }
     }
+  }
+}
+
+#orders-datatable {
+  align-items: none;
+}
+
+#profile-picture {
+  overflow: hidden;
+  margin: auto;
+  margin-bottom: 1.5rem;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: var(--text);
+
+  & > img {
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
   }
 }
 
@@ -306,18 +336,7 @@ header {
 }
 
 .pagination-controls button {
-  background-color: var(--cardBackgrounds);
-  color: var(--text);
-  border: 0.1rem solid var(--text);
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  cursor: pointer;
-  transition: all 0.5s ease-in-out;
-
-  &:hover {
-    background-color: var(--text);
-    color: var(--cardBackgrounds);
-  }
+  @include buttonMix();
 }
 
 .filter-input {
@@ -343,22 +362,8 @@ header {
   }
 
   & button {
-    margin-left: 0.5rem;
-    background-color: var(--cardBackgrounds);
-    color: var(--text);
-    border: 0.1rem solid var(--text);
-    border-radius: 0.5rem;
-    padding: 0.3rem;
-    cursor: pointer;
-    transition: all 0.5s ease-in-out;
-
-    &:hover {
-      background-color: var(--text);
-      color: var(--cardBackgrounds);
-    }
+    @include buttonMix();
   }
-
-
 }
 
 form {
@@ -375,7 +380,7 @@ form {
     margin-right: 0.3rem;
   }
 
-  & div :is(label, input, select){
+  & div :is(label, input, select) {
     padding: 0.4rem;
     border-radius: 0.5rem;
     border: 0.1rem solid var(--text);
@@ -393,22 +398,50 @@ form {
   }
 
   & input[type="submit"] {
+    @include buttonMix();
+  }
+}
+
+#upload-button {
+  @include buttonMix();
+  width: 100%;
+}
+
+#profile-actions {
+  & > form {
+    position: relative;
+    padding-bottom: 0.8rem;
+    margin-bottom: 1rem;
     width: 100%;
-    background-color: var(--cardBackgrounds);
-    color: var(--text);
-    border: 0.1rem solid var(--text);
-    border-radius: 0.5rem;
-    margin-top: 1rem;
-    padding: 0.3rem;
-    cursor: pointer;
-    transition: all 0.5s ease-in-out;
 
-    &:hover {
-      background-color: var(--text);
-      color: var(--cardBackgrounds);
+    &:last-child{
+      margin-bottom: 0;
+      
+      &::after{
+        content: none;
+      }
     }
-
   }
 
+  & form::after {
+    content: "";
+    width: 80%;
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 2px;
+    background-color: white;
 
+  }
+}
+
+#delete-button{
+  background-color: red;
+}
+
+#api-button {
+  @include buttonMix();
+  margin-top: 0.5rem;
+  width: 100%;
 }

@@ -5,7 +5,7 @@ import {
   RecentOrder,
 } from "../components/Data-table-Columns/RecentOrders";
 import { DataTable } from "../components/ui/data-table";
-import Cards from "../components/ui/Card";
+import {Cards, Card}  from "../components/ui/Card";
 
 async function getOrders(): Promise<RecentOrder[]> {
   return [
@@ -87,22 +87,21 @@ const index = () => {
           <h1>Dashboard</h1>
         </div>
         <Cards>
-          <div title="Total Money In">
+          <Card cardClass="smaller-card" title="Total Money In">
             <p className="card-text-large">£2000</p>
-          </div>
-          <div title="Total Orders">
+          </Card>
+          <Card cardClass="smaller-card"  title="Total Orders">
             <p className="card-text-large">4000</p>
-          </div>
-          <div title="Best Seller">
+          </Card>
+          <Card cardClass="smaller-card"  title="Best Seller">
             <p className="card-text-large">Product 1</p>
-            <img src="" alt="image of product" />
-          </div>
-          <div id="Graph" title="Sales Graph">
+          </Card>
+          <Card bodyID="Graph" id="sales-graph" title="Sales Graph">
             <Graph />
-          </div>
-          <div title="Recent Orders">
+          </Card>
+          <Card title="Recent Orders">
             <DataTable columns={columns} data={data} type="order" />
-          </div>
+          </Card>
         </Cards>
       </div>
     </>

@@ -1,34 +1,39 @@
 import React, { FC } from "react";
 import index from '../../pages/Home';
 
+
 interface CardsProps {
   children: React.ReactNode[];
+  holderID?:string
 }
 
 interface CardProps {
-  title: string;
+  title?: string;
   children: React.ReactNode;
+  id?: string;
+  bodyID?: string;
+  cardClass?: string;
 }
 
-const Card: FC<CardProps> = ({ title, children }) => {
+const Card: FC<CardProps> = ({ title, children, id, bodyID,cardClass }) => {
+  
+  cardClass = "card " + cardClass
   return (
-    <div className="card">
+    <div id={id} className={cardClass}>
       <div className="card-heading">
         <h2>{title}</h2>
       </div>
-      <div className="card-body">{children}</div>
+      <div id={bodyID} className="card-body">{children}</div>
     </div>
   );
 };
 
-const Cards: FC<CardsProps> = ({ children }) => {
+const Cards: FC<CardsProps> = ({ children, holderID }) => {
   return (
-    <div className="cards-holder">
-      {children?.map((child:any, index:number) => {
-        return <Card key={index} title={child?.props.title}>{child}</Card>;
-      })}
+    <div id={holderID} className="cards-holder">
+      {children}
     </div>
   );
 };
 
-export default Cards
+export { Cards, Card }

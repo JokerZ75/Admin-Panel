@@ -1,4 +1,4 @@
-import Cards from "@/components/ui/Card";
+import { Cards, Card } from "@/components/ui/Card";
 import React, { useMemo, useState } from "react";
 import { columns, Order } from "../components/Data-table-Columns/OrdersPage";
 import { DataTable } from "../components/data-table-orders";
@@ -113,14 +113,14 @@ const Orders = () => {
           <h1>Orders</h1>
         </div>
         <Cards>
-          <div title="Orders In last 30 days">
+          <Card title="Orders In Last 30 Days">
             <p className="card-text-large">+ 2000</p>
-          </div>
-          <div title="Total Orders">
+          </Card>
+          <Card title="Total Orders">
             <p className="card-text-large">4000</p>
-          </div>
+          </Card>
           {selectedRow.name ? (
-            <div title="Update Order (Unselect to Create)">
+            <Card title="Update Order (Unselect to Create)">
               <p className="card-text">
                 <Form
                   id="order-form"
@@ -130,13 +130,6 @@ const Orders = () => {
                     console.log(formValues);
                   })}
                 >
-                  <Input
-                    For="id"
-                    Label="ID"
-                    placeholder="Leave Blank to Auto Generate"
-                    Type="text"
-                    register={register("id")}
-                  />
                   <Input
                     For="name"
                     Label="Name"
@@ -200,9 +193,9 @@ const Orders = () => {
                   <input type="submit" />
                 </Form>
               </p>
-            </div>
+            </Card>
           ) : (
-            <div title="Create Order (Select From Table to Update)">
+            <Card title="Create Order (Select From Table to Update)">
               <p className="card-text">
                 <Form
                   id="order-form"
@@ -212,13 +205,6 @@ const Orders = () => {
                     console.log(formValues);
                   })}
                 >
-                  <Input
-                    For="id"
-                    Label="ID"
-                    placeholder="Leave Blank to Auto Generate"
-                    Type="text"
-                    register={register("id")}
-                  />
                   <Input
                     For="name"
                     Label="Name"
@@ -282,15 +268,11 @@ const Orders = () => {
                   <input type="submit" />
                 </Form>
               </p>
-            </div>
+            </Card>
           )}
-          <div title="Orders">
-            <DataTable
-              columns={columns}
-              data={data}
-              setRow={setSelectedRow}
-            />
-          </div>
+          <Card id="orders-datatable-card" bodyID="orders-datatable" title="Orders">
+            <DataTable columns={columns} data={data} setRow={setSelectedRow} />
+          </Card>
         </Cards>
       </div>
     </>

@@ -108,7 +108,7 @@ function DataTable<TData, TValue>({
           onChange={(event) =>
             table.getColumn("email")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="w-max"
         />
         {table.getRowModel().rows?.filter((row) => row.getIsSelected()).length >
           0 && (
