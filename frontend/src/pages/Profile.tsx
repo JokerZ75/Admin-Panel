@@ -32,13 +32,13 @@ const Profile = () => {
             </div>
             <button id="upload-button">Upload Picture</button>
           </Card>
-          <Card title="Profile Details">
+          <Card bodyID="profile-details-text" title="Profile Details">
             <p className="card-text">Username: DeaconH</p>
             <p className="card-text">Email: Deacon@mail.com</p>
             <p className="card-text">Api Key: idj29skk10aje93d20</p>
             <button id="api-button">Regenerate API KEY</button>
           </Card>
-          <Card bodyID="profile-actions" title="Actions">
+          <Card id="card-actions" bodyID="profile-actions" title="Actions">
             <Form
               id="change-username-form"
               onSubmit={handleSubmitUsername((formValues) => {
