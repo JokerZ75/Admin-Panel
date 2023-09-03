@@ -29,7 +29,7 @@ router.route("/add").post((req, res) => {
   const orderItems = req.body.orderItems;
   const shippingAddress = req.body.shippingAddress;
   const paymentMethod = req.body.paymentMethod;
-  const totalPrice = req.body.totalPrice;
+  const amount = req.body.amount;
   const shippingType = req.body.shippingType;
   const shippingPrice = req.body.shippingPrice;
   const notes = req.body.notes;
@@ -39,7 +39,7 @@ router.route("/add").post((req, res) => {
     orderItems,
     shippingAddress,
     paymentMethod,
-    totalPrice,
+    amount,
     shippingType,
     shippingPrice,
     notes,
