@@ -6,8 +6,9 @@ import { ColumnDef } from "@tanstack/react-table";
 export type RecentOrder = {
   _id: string;
   name: string;
-  status: "success" | "pending" | "cancelled";
-  totalPrice: number;
+  products: Array<Array<string>>;
+  status: "Success" | "Pending" | "Cancelled";
+  amount: number;
 };
 
 export const columns: ColumnDef<RecentOrder>[] = [

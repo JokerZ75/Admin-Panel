@@ -14,7 +14,6 @@ const Orders = () => {
     queryKey: ["orders"],
     queryFn: async () => {
       const { data } = await axios.get("http://localhost:8008/orders");
-      console.log(data as Order[]);
       return data as Order[];
     },
   });
@@ -23,7 +22,7 @@ const Orders = () => {
 
   React.useEffect(() => {
     if (selectedRow.name) {
-      setValue("id", selectedRow.id);
+      setValue("id", selectedRow._id);
       setValue("name", selectedRow.name);
       setValue("email", selectedRow.email);
       setValue("address", selectedRow.address);
