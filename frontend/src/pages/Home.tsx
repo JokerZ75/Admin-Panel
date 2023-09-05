@@ -10,7 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { json } from "stream/consumers";
 import { set } from "react-hook-form";
-import useEffect from 'react';
+import useEffect from "react";
 
 interface Product {
   item: string;
@@ -19,33 +19,73 @@ interface Product {
 }
 
 const index = () => {
-  const { data, isError } = useQuery({
+  var months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const { data, isError, error } = useQuery({
     queryKey: ["orders"],
     queryFn: async () => {
       const { data } = await axios.get("http://localhost:8008/orders");
       let products = await data.flatMap((order: RecentOrder) => {
-        return order.products
+        return order.products;
       });
-      let RecentOrders = await data.map((order: RecentOrder) => {
-        if (new Date(order.createdAt) < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) && new Date(order.createdAt) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)) {
-           return order;
-        } else{
-          return null;
-        }
+      let RecentOrders = await data
+        .map((order: RecentOrder) => {
+          if (
+            new Date(order.createdAt) <
+              new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) &&
+            new Date(order.createdAt) >
+              new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+          ) {
+            return order;
+          } else {
+            return null;
+          }
+        })
+        .filter((order: RecentOrder) => order !== null);
+      let monthMap = new Map<string, number>();
+      await data.forEach((order: RecentOrder) => {
+        let month = new Date(order.createdAt).getMonth().toString();
+        month = months[parseInt(month)];
 
-      }).filter((order: RecentOrder) => order !== null);
+        if (monthMap.has(month)) {
+          monthMap.set(month, monthMap.get(month)! + 1);
+        } else {
+          monthMap.set(month, 1);
+        }
+      });
+      console.log(monthMap);
+      let graphData: Array<{
+        name: string;
+        sales: number;
+      }> = [];
+      monthMap.forEach((value: number, key: string) => {
+        graphData.push({ name: key, sales: value });
+      });
+
+      setGraphData(graphData);
       setRecentOrders(RecentOrders);
       setProducts(products);
       return data as RecentOrder[];
     },
   });
 
-
-
   const [products, setProducts] = useState<Product[]>([]);
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
+  const [graphData, setGraphData] = useState<any[]>([]);
   const [bestSeller, setBestSeller] = useState<string>("");
-  
+
   React.useEffect(() => {
     let quantityTracker = new Map<string, number>();
     products.forEach((product: Product) => {
@@ -65,10 +105,13 @@ const index = () => {
         max = value;
         bestSeller = key;
       }
-    }
-    );
+    });
     setBestSeller(bestSeller);
   }, [products]);
+
+  React.useEffect(() => {
+    console.log(error);
+  }, [data]);
 
   return (
     <>
@@ -93,14 +136,12 @@ const index = () => {
             )}
           </Card>
           <Card cardClass="smaller-card" title="Best Seller">
-            {(data && (
-              <p className="card-text-large">
-                {bestSeller}
-              </p>
-            )) || <p>Loading...</p>}
+            {(data && <p className="card-text-large">{bestSeller}</p>) || (
+              <p>Loading...</p>
+            )}
           </Card>
           <Card bodyID="Graph" id="sales-graph" title="Sales Graph">
-            <Graph />
+            <Graph data={graphData} />
           </Card>
           <Card title="Recent Orders">
             {(data && (
