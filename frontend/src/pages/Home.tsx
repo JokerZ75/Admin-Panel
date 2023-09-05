@@ -33,7 +33,7 @@ const index = () => {
     "November",
     "December",
   ];
-  const { data, isError, error } = useQuery({
+  const { data, isError } = useQuery({
     queryKey: ["orders"],
     queryFn: async () => {
       const { data } = await axios.get("http://localhost:8008/orders");
@@ -65,7 +65,6 @@ const index = () => {
           monthMap.set(month, 1);
         }
       });
-      console.log(monthMap);
       let graphData: Array<{
         name: string;
         sales: number;
@@ -108,10 +107,6 @@ const index = () => {
     });
     setBestSeller(bestSeller);
   }, [products]);
-
-  React.useEffect(() => {
-    console.log(error);
-  }, [data]);
 
   return (
     <>
