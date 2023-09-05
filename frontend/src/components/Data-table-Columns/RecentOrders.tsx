@@ -9,6 +9,7 @@ export type RecentOrder = {
   products: Array<Array<string>>;
   status: "Success" | "Pending" | "Cancelled";
   amount: number;
+  createdAt: Date;
 };
 
 export const columns: ColumnDef<RecentOrder>[] = [

@@ -26,6 +26,15 @@ const index = () => {
       let products = await data.flatMap((order: RecentOrder) => {
         return order.products
       });
+      let RecentOrders = await data.map((order: RecentOrder) => {
+        if (new Date(order.createdAt) < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) && new Date(order.createdAt) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)) {
+           return order;
+        } else{
+          return null;
+        }
+
+      }).filter((order: RecentOrder) => order !== null);
+      setRecentOrders(RecentOrders);
       setProducts(products);
       return data as RecentOrder[];
     },
@@ -34,6 +43,7 @@ const index = () => {
 
 
   const [products, setProducts] = useState<Product[]>([]);
+  const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
   const [bestSeller, setBestSeller] = useState<string>("");
   
   React.useEffect(() => {
@@ -94,7 +104,7 @@ const index = () => {
           </Card>
           <Card title="Recent Orders">
             {(data && (
-              <DataTable columns={columns} data={data} type="order" />
+              <DataTable columns={columns} data={recentOrders} type="order" />
             )) || <p>Loading...</p>}
             {isError && (
               <p>
