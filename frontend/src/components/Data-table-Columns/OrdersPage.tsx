@@ -3,8 +3,10 @@
 import React from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "../ui/checkbox";
+import { randomInt } from "crypto";
 
 export type Order = {
+  createdAt: string | number | Date;
   _id: string;
   name: string;
   email: string;
@@ -51,10 +53,8 @@ export const columns: ColumnDef<Order>[] = [
     header: () => <div className="text-right">Products</div>,
     cell: ({ row }) => {
       const products: Array<Array<string>> = row.getValue("products");
-      console.log(products);
       return products.map((product: any) => {
-        console.log(product.item);
-        return <div className="text-right font-medium">{product.quantity}x {product.item}</div>;
+        return <div key={(product.quantity * Math.random())} className="text-right font-medium">{product.quantity}x {product.item}</div>;
       });
     },
   },

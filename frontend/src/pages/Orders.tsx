@@ -51,11 +51,24 @@ const Orders = () => {
           <h1>Orders</h1>
         </div>
         <Cards>
-          <Card title="Orders In Last 30 Days">
-            <p className="card-text-large">+ 2000</p>
+          <Card cardClass="smaller-card" title="Orders In Last 30 Days">
+            <p className="card-text-large">
+              {
+                data?.filter((order: Order) => {
+                  return (
+                    new Date(order.createdAt) <
+                      new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) &&
+                    new Date(order.createdAt) >
+                      new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+                  );
+                }).length
+              }
+            </p>
           </Card>
-          <Card title="Total Orders">
-            <p className="card-text-large">4000</p>
+          <Card cardClass="smaller-card" title="Total Orders">
+            {(data && <p className="card-text-large">{data?.length}</p>) || (
+              <p>Loading...</p>
+            )}
           </Card>
           {selectedRow.name ? (
             <Card title="Update Order (Unselect to Create)">
@@ -208,11 +221,23 @@ const Orders = () => {
               </p>
             </Card>
           )}
-          <Card id="orders-datatable-card" bodyID="orders-datatable" title="Orders">
-          {(data && (
-              <DataTable columns={columns} data={data} setRow={setSelectedRow} />
+          <Card
+            id="orders-datatable-card"
+            bodyID="orders-datatable"
+            title="Orders"
+          >
+            {(data && (
+              <DataTable
+                columns={columns}
+                data={data}
+                setRow={setSelectedRow}
+              />
             )) || <p>Loading...</p>}
-            {isError && <p>There was an error fetching the data please try again later...</p>}
+            {isError && (
+              <p>
+                There was an error fetching the data please try again later...
+              </p>
+            )}
           </Card>
         </Cards>
       </div>

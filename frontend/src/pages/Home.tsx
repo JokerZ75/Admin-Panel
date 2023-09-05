@@ -40,25 +40,20 @@ const index = () => {
       let products = await data.flatMap((order: RecentOrder) => {
         return order.products;
       });
-      let RecentOrders = await data
-        .map((order: RecentOrder) => {
-          if (
-            new Date(order.createdAt) <
-              new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) &&
-            new Date(order.createdAt) >
-              new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-          ) {
-            return order;
-          } else {
-            return null;
-          }
-        })
-        .filter((order: RecentOrder) => order !== null);
+
+     let RecentOrders = await data.filter((order: RecentOrder) => {
+        return (
+          new Date(order.createdAt) <
+            new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) &&
+          new Date(order.createdAt) >
+            new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+        );
+      });
+
       let monthMap = new Map<string, number>();
       await data.forEach((order: RecentOrder) => {
         let month = new Date(order.createdAt).getMonth().toString();
         month = months[parseInt(month)];
-
         if (monthMap.has(month)) {
           monthMap.set(month, monthMap.get(month)! + 1);
         } else {
