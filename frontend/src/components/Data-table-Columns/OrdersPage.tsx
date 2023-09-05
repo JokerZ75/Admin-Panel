@@ -5,12 +5,12 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "../ui/checkbox";
 
 export type Order = {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   address: string;
   phone: string;
-  products: string;
+  products: Array<Array<string>>;
   amount: number;
   status: "Success" | "Pending" | "Cancelled";
   shipped: "Shipped" | "Pending";
@@ -23,7 +23,7 @@ export const columns: ColumnDef<Order>[] = [
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
-        onCheckedChange={(value:any) => row.toggleSelected(!!value)}
+        onCheckedChange={(value: any) => row.toggleSelected(!!value)}
         aria-label="Select row"
       />
     ),
@@ -39,16 +39,24 @@ export const columns: ColumnDef<Order>[] = [
     accessorKey: "email",
   },
   {
-    accessorKey: "Address",
+    accessorKey: "address",
     header: "Address",
   },
   {
-    accessorKey: "Phone",
+    accessorKey: "phone",
     header: "Phone",
   },
   {
-    accessorKey: "Products",
-    header: "Products",
+    accessorKey: "products",
+    header: () => <div className="text-right">Products</div>,
+    cell: ({ row }) => {
+      const products: Array<Array<string>> = row.getValue("products");
+      console.log(products);
+      return products.map((product: any) => {
+        console.log(product.item);
+        return <div className="text-right font-medium">{product.quantity}x {product.item}</div>;
+      });
+    },
   },
   {
     accessorKey: "amount",
@@ -67,7 +75,7 @@ export const columns: ColumnDef<Order>[] = [
     header: "Status",
   },
   {
-    accessorKey: "Shipped",
+    accessorKey: "shipped",
     header: "Shipped",
   },
 ];

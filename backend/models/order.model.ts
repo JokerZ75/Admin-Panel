@@ -5,39 +5,14 @@ const Schema = mongoose.Schema;
 
 const orderSchema = new Schema(
   {
-    orderItems: {
-      type: Array,
-      required: true,
-    },
-    shippingAddress: {
-      type: Object,
-      required: true,
-    },
-    paymentMethod: {
-      type: String,
-      required: true,
-    },
-    totalPrice: {
-      type: Number,
-      required: true,
-    },
-    shippingType: {
-      type: String,
-      required: true,
-    },
-    shippingPrice: {
-      type: Number,
-      required: true,
-    },
-    notes: {
-      type: String,
-      required: false,
-    },
-    shopOwner: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-    }
+    name: { type: String, required: true, trim: true },
+    email: { type: String, required: true, trim: true },
+    address: { type: String, required: true, trim: true },
+    phone: { type: String, required: true, trim:true  },
+    products: { type:Array, required: true },
+    amount: { type: Number, required: true },
+    status: { type: String, required: true, trim: true },
+    shipped: { type: String, required: true, trim: true },
   },
   {
     timestamps: true,

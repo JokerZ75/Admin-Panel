@@ -6,6 +6,7 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  VisibilityState,
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -22,7 +23,7 @@ import { useMediaQuery } from "@mui/material";
 import React from "react";
 import { Input } from "./ui/input";
 import { Order } from "./Data-table-Columns/OrdersPage";
-import index from '../pages/Home';
+import index from "../pages/Home";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -39,6 +40,8 @@ function DataTable<TData, TValue>({
     []
   );
   const [rowSelection, setRowSelection] = React.useState({});
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
 
   const table = useReactTable({
     data,
@@ -48,10 +51,12 @@ function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnFiltersChange: setColumnFilters,
     onRowSelectionChange: setRowSelection,
+    onColumnVisibilityChange: setColumnVisibility,
 
     state: {
       columnFilters,
       rowSelection,
+      columnVisibility,
     },
 
     initialState: {
@@ -73,8 +78,7 @@ function DataTable<TData, TValue>({
       setRow(selectedRows[0]._valuesCache as Order);
     } else if (selectedRows.length > 1) {
       previousRow.toggleSelected();
-    } 
-    else {
+    } else {
       setRow({} as Order);
     }
   }, [rowSelection, previousRow]);

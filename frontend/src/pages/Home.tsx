@@ -10,79 +10,10 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { json } from "stream/consumers";
 
-async function getOrders(): Promise<RecentOrder[]> {
-  return [
-    {
-      id: "1",
-      name: "John Doe",
-      status: "success",
-      amount: 100,
-    },
-    {
-      id: "2",
-      name: "Jane Doe",
-      status: "pending",
-      amount: 100,
-    },
-    {
-      id: "3",
-      name: "John Smith",
-      status: "cancelled",
-      amount: 100,
-    },
-    {
-      id: "4",
-      name: "Jane Smith",
-      status: "success",
-      amount: 100,
-    },
-    {
-      id: "5",
-      name: "John Doe",
-      status: "success",
-      amount: 100,
-    },
-    {
-      id: "6",
-      name: "Jane Doe",
-      status: "pending",
-      amount: 100,
-    },
-    {
-      id: "7",
-      name: "John Smith",
-      status: "cancelled",
-      amount: 100,
-    },
-    {
-      id: "8",
-      name: "Jane Smith",
-      status: "success",
-      amount: 100,
-    },
-    {
-      id: "9",
-
-      name: "John Doe",
-      status: "success",
-      amount: 100,
-    },
-    {
-      id: "10",
-      name: "Jane Doe",
-      status: "pending",
-      amount: 100,
-    },
-  ];
-}
 
 const index = () => {
-  const [dataS, setData] = useState<RecentOrder[]>([]);
-  useMemo(() => {
-    getOrders().then((orders: RecentOrder[]) => setData(orders));
-  }, []);
-
-  const { data, isLoading, isError } = useQuery({
+  const { data, isError } = useQuery({
+    queryKey: ["orders"],
     queryFn: async () => {
       const { data } = await axios.get("http://localhost:8008/orders");
       console.log(data as RecentOrder[]);
@@ -110,18 +41,10 @@ const index = () => {
             <Graph />
           </Card>
           <Card title="Recent Orders">
-            <DataTable columns={columns} data={dataS} type="order" />
-          </Card>
-          <Card title="test">
-            {
-              data?.map((order: RecentOrder) => {
-                return (
-                  <div>
-                    <p>{order_id}</p>
-                  </div>
-                );
-              })
-            }
+            {(data && (
+              <DataTable columns={columns} data={data} type="order" />
+            )) || <p>Loading...</p>}
+            {isError && <p>There was an error fetching the data please try again later...</p>}
           </Card>
         </Cards>
       </div>

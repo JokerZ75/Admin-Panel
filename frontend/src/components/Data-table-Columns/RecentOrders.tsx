@@ -4,16 +4,16 @@ import React from "react";
 import { ColumnDef } from "@tanstack/react-table";
 
 export type RecentOrder = {
-  id: string;
+  _id: string;
   name: string;
   status: "success" | "pending" | "cancelled";
-  amount: number;
+  totalPrice: number;
 };
 
 export const columns: ColumnDef<RecentOrder>[] = [
   {
     header: "ID",
-    accessorKey: "id",
+    accessorKey: "_id",
   },
   {
     header: "Name",

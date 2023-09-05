@@ -4,81 +4,20 @@ import { columns, Order } from "../components/Data-table-Columns/OrdersPage";
 import { DataTable } from "../components/data-table-orders";
 import { Form, Input, Select } from "../components/ui/Form";
 import { useFieldArray, useForm } from "react-hook-form";
-
-async function getOrders(): Promise<Order[]> {
-  return [
-    {
-      id: "1",
-      name: "John Doe",
-      status: "Success",
-      amount: 100,
-      email: "John@email.com",
-    },
-    {
-      id: "2",
-      name: "Jane Doe",
-      status: "Pending",
-      amount: 100,
-      email: "Jane@email.com",
-    },
-    {
-      id: "3",
-      name: "John Smith",
-      status: "cancelled",
-      amount: 100,
-    },
-    {
-      id: "4",
-      name: "Jane Smith",
-      status: "success",
-      amount: 100,
-    },
-    {
-      id: "5",
-      name: "John Doe",
-      status: "success",
-      amount: 100,
-    },
-    {
-      id: "6",
-      name: "Jane Doe",
-      status: "pending",
-      amount: 100,
-    },
-    {
-      id: "7",
-      name: "John Smith",
-      status: "cancelled",
-      amount: 100,
-    },
-    {
-      id: "8",
-      name: "Jane Smith",
-      status: "success",
-      amount: 100,
-    },
-    {
-      id: "9",
-
-      name: "John Doe",
-      status: "success",
-      amount: 100,
-    },
-    {
-      id: "10",
-      name: "Jane Doe",
-      status: "pending",
-      amount: 100,
-    },
-  ];
-}
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const Orders = () => {
-  const [data, setData] = useState<Order[]>([]);
   const [selectedRow, setSelectedRow] = useState<Order>({} as Order);
-  useMemo(() => {
-    getOrders().then((orders: Order[]) => setData(orders));
-  }, []);
+
+  const { data, isError } = useQuery({
+    queryKey: ["orders"],
+    queryFn: async () => {
+      const { data } = await axios.get("http://localhost:8008/orders");
+      console.log(data as Order[]);
+      return data as Order[];
+    },
+  });
 
   const { register, control, handleSubmit, setValue } = useForm({});
 
@@ -271,7 +210,10 @@ const Orders = () => {
             </Card>
           )}
           <Card id="orders-datatable-card" bodyID="orders-datatable" title="Orders">
-            <DataTable columns={columns} data={data} setRow={setSelectedRow} />
+          {(data && (
+              <DataTable columns={columns} data={data} setRow={setSelectedRow} />
+            )) || <p>Loading...</p>}
+            {isError && <p>There was an error fetching the data please try again later...</p>}
           </Card>
         </Cards>
       </div>
