@@ -1,5 +1,5 @@
 import { Cards, Card } from "@/components/ui/Card";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { columns, Order } from "../components/Data-table-Columns/OrdersPage";
 import { DataTable } from "../components/data-table-orders";
 import { Form, Input, Select } from "../components/ui/Form";
@@ -9,6 +9,7 @@ import axios from "axios";
 
 const Orders = () => {
   const [selectedRow, setSelectedRow] = useState<Order>({} as Order);
+  const [products, setProducts] = useState<any[]>([]);
 
   const { data, isError } = useQuery({
     queryKey: ["orders"],
@@ -18,8 +19,14 @@ const Orders = () => {
     },
   });
 
-  const { register, control, handleSubmit, setValue } = useForm({});
-
+  const { register, control, handleSubmit, setValue, getValues } = useForm({});
+  const AddProduct = () => {
+    setProducts([
+      ...products,
+      {
+      },
+    ]);
+  };
   React.useEffect(() => {
     if (selectedRow.name) {
       setValue("id", selectedRow._id);
@@ -188,14 +195,49 @@ const Orders = () => {
                     register={register("phone")}
                     required={true}
                   />
-                  <Input
-                    For="products"
-                    Label="Products"
-                    placeholder="2x Eggs, 3x Item"
-                    Type="text"
-                    register={register("products")}
-                    required={true}
-                  />
+                  <div>
+                    <label id="product-label" htmlFor="Products">Products</label>
+                    <div id="products-form-inputs">
+                      <input
+                        type="button"
+                        id="addProduct"
+                        value={"Add Product"}
+                        onClick={AddProduct}
+                      />
+                      {products.map((product, index) => {
+                        return (
+                          <div key={index}>
+                            <input
+                              type="text"
+                              id={`product-name-${index}`}
+                              placeholder="Product Name"
+                              {...register(`products.${index}.product-name`)}
+                            />
+                            <input
+                              type="number"
+                              id={`product-quantity-${index}`}
+                              placeholder="Product Quantity"
+                              min={1}
+                              defaultValue={1}
+                              {...register(
+                                `products.${index}.product-quantity`
+                              )}
+                            />
+                            <input
+                              type="button"
+                              value="Remove"
+                              data-index={index}
+                              onClick={() => {
+                                event?.preventDefault();
+                                // @ts-expect-error
+                                event?.target.parentElement?.remove();
+                              }}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                   <Input
                     For="Amount"
                     Label="Amount"
