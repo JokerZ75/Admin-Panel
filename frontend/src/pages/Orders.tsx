@@ -194,7 +194,7 @@ const Orders = () => {
                               id={`item-${index}`}
                               placeholder="Product Name"
                               {...register(`products.${index}.item`)}
-                              value={product["item"]}
+                              defaultValue={product["item"]}
                             />
                             <label htmlFor={`quantity-${index}`}>
                               Quantity
@@ -204,11 +204,10 @@ const Orders = () => {
                               id={`quantity-${index}`}
                               placeholder="Product Quantity"
                               min={1}
-                              defaultValue={1}
                               {...register(
                                 `products.${index}.quantity`
                               )}
-                              value={product["quantity"]}
+                              defaultValue={product["quantity"]}
                             />
                             <label htmlFor={`price-${index}`}>
                               Price
@@ -219,7 +218,7 @@ const Orders = () => {
                               placeholder="Product Price In £"
                               min={1}
                               {...register(`products.${index}.price`)}
-                              value={product["price"]}
+                              defaultValue={product["price"]}
                             />
                             <input
                               type="button"
