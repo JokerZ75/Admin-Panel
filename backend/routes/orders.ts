@@ -69,16 +69,17 @@ router.route("/add").post((req, res) => {
 
 // Update order
 
-router.route("/update/:id").post((req, res) => {
+router.route("/update/:id").put((req, res) => {
   Order.findById(req.params.id)
     .then((order) => {
-      order.orderItems = req.body.orderItems;
-      order.shippingAddress = req.body.shippingAddress;
-      order.paymentMethod = req.body.paymentMethod;
-      order.totalPrice = req.body.totalPrice;
-      order.shippingType = req.body.shippingType;
-      order.shippingPrice = req.body.shippingPrice;
-      order.notes = req.body.notes;
+      order.name = req.body.name;
+      order.email = req.body.email;
+      order.address = req.body.address;
+      order.phone = req.body.phone;
+      order.products = req.body.products;
+      order.amount = req.body.amount;
+      order.status = req.body.status;
+      order.shipped = req.body.shipped;
 
       order
         .save()

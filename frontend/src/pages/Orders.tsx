@@ -3,9 +3,10 @@ import React, { useState } from "react";
 import { columns, Order } from "../components/Data-table-Columns/OrdersPage";
 import { DataTable } from "../components/data-table-orders";
 import { Form, Input, Select } from "../components/ui/Form";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, set, FieldValues } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { Pause } from "lucide-react";
 
 const Orders = () => {
   const [selectedRow, setSelectedRow] = useState<Order>({} as Order);
@@ -21,19 +22,18 @@ const Orders = () => {
 
   const { register, control, handleSubmit, setValue, getValues } = useForm({});
   const AddProduct = () => {
-    setProducts([
-      ...products,
-      {
-      },
-    ]);
+    setProducts([...products, {}]);
   };
+
   React.useEffect(() => {
+    setProducts([]);
     if (selectedRow.name) {
-      setValue("id", selectedRow._id);
+      setValue("_id", selectedRow._id);
       setValue("name", selectedRow.name);
       setValue("email", selectedRow.email);
       setValue("address", selectedRow.address);
       setValue("phone", selectedRow.phone);
+      setProducts(selectedRow.products);
       setValue("products", selectedRow.products);
       setValue("amount", selectedRow.amount);
       setValue("status", selectedRow.status);
@@ -50,6 +50,41 @@ const Orders = () => {
       setValue("shipped", "");
     }
   }, [selectedRow]);
+
+  const handleSubmitOrder = (formValues: FieldValues, update=false ) => {
+    const payload = {
+      name: formValues.name,
+      email: formValues.email,
+      address: formValues.address,
+      phone: formValues.phone,
+      products: formValues.products.flatMap((product: any) => {
+        return [
+          {
+            item: product["product-name"],
+            quantity: parseInt(product["product-quantity"]),
+            price: parseInt(product["product-price"]),
+          },
+        ];
+      }),
+      amount: formValues.products.reduce((acc: number, product: any) => {
+        return acc + parseInt(product["product-quantity"]) * parseInt(product["product-price"]);
+      }, 0),
+      status: formValues.status,
+      shipped: formValues.shipped,
+    };
+    console.log(payload);
+    if (update){
+      const requestURL = `http://localhost:8008/orders/update/${formValues._id}`;
+      axios.put(requestURL, payload).then((res) => {
+        console.log(res);
+      });
+    } else {
+      axios.post("http://localhost:8008/orders/add", payload).then((res) => {
+        console.log(res);
+      }
+      );
+    }
+  };
 
   return (
     <>
@@ -83,11 +118,11 @@ const Orders = () => {
                 <Form
                   id="order-form"
                   onSubmit={handleSubmit((formValues) => {
-                    // @ts-expect-error
-                    event.preventDefault();
-                    console.log(formValues);
+                    event?.preventDefault();
+                    handleSubmitOrder(formValues, true);
                   })}
                 >
+                  <input type="hidden" {...register("_id")} />
                   <Input
                     For="name"
                     Label="Name"
@@ -120,22 +155,69 @@ const Orders = () => {
                     register={register("phone")}
                     required={true}
                   />
-                  <Input
-                    For="products"
-                    Label="Products"
-                    placeholder="2x Eggs, 3x Item"
-                    Type="text"
-                    register={register("products")}
-                    required={true}
-                  />
-                  <Input
-                    For="Amount"
-                    Label="Amount"
-                    placeholder="£200"
-                    Type="number"
-                    register={register("amount")}
-                    required={true}
-                  />
+                  <div>
+                    <label id="product-label" htmlFor="Products">
+                      Products
+                    </label>
+                    <div id="products-form-inputs">
+                      <input
+                        type="button"
+                        id="addProduct"
+                        value={"Add Product"}
+                        onClick={AddProduct}
+                      />
+                      {products.map((product, index) => {
+                        return (
+                          <div key={index}>
+                            <label htmlFor={`product-name-${index}`}>
+                              Product
+                            </label>
+                            <input
+                              type="text"
+                              id={`product-name-${index}`}
+                              placeholder="Product Name"
+                              {...register(`products.${index}.product-name`)}
+                              value={product["item"]}
+                            />
+                            <label htmlFor={`product-quantity-${index}`}>
+                              Quantity
+                            </label>
+                            <input
+                              type="number"
+                              id={`product-quantity-${index}`}
+                              placeholder="Product Quantity"
+                              min={1}
+                              defaultValue={1}
+                              {...register(
+                                `products.${index}.product-quantity`
+                              )}
+                              value={product["quantity"]}
+                            />
+                            <label htmlFor={`product-price-${index}`}>
+                              Price
+                            </label>
+                            <input
+                              type="number"
+                              id={`product-price-${index}`}
+                              placeholder="Product Price In £"
+                              min={1}
+                              {...register(`products.${index}.product-price`)}
+                              value={product["price"]}
+                            />
+                            <input
+                              type="button"
+                              value="Remove"
+                              data-index={index}
+                              onClick={() => {
+                                event?.preventDefault(); // @ts-expect-error
+                                event?.target.parentElement?.remove();
+                              }}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                   <Select
                     For="status"
                     Label="Status"
@@ -158,9 +240,8 @@ const Orders = () => {
                 <Form
                   id="order-form"
                   onSubmit={handleSubmit((formValues) => {
-                    // @ts-expect-error
-                    event.preventDefault();
-                    console.log(formValues);
+                    event?.preventDefault();
+                    handleSubmitOrder(formValues);
                   })}
                 >
                   <Input
@@ -196,7 +277,9 @@ const Orders = () => {
                     required={true}
                   />
                   <div>
-                    <label id="product-label" htmlFor="Products">Products</label>
+                    <label id="product-label" htmlFor="Products">
+                      Products
+                    </label>
                     <div id="products-form-inputs">
                       <input
                         type="button"
@@ -207,12 +290,19 @@ const Orders = () => {
                       {products.map((product, index) => {
                         return (
                           <div key={index}>
+                            <label htmlFor={`product-name-${index}`}>
+                              Product
+                            </label>
                             <input
                               type="text"
                               id={`product-name-${index}`}
                               placeholder="Product Name"
                               {...register(`products.${index}.product-name`)}
+                              value={product["item"]}
                             />
+                            <label htmlFor={`product-quantity-${index}`}>
+                              Quantity
+                            </label>
                             <input
                               type="number"
                               id={`product-quantity-${index}`}
@@ -222,14 +312,25 @@ const Orders = () => {
                               {...register(
                                 `products.${index}.product-quantity`
                               )}
+                              value={product["quantity"]}
+                            />
+                            <label htmlFor={`product-price-${index}`}>
+                              Price
+                            </label>
+                            <input
+                              type="number"
+                              id={`product-price-${index}`}
+                              placeholder="Product Price In £"
+                              min={1}
+                              {...register(`products.${index}.product-price`)}
+                              value={product["price"]}
                             />
                             <input
                               type="button"
                               value="Remove"
                               data-index={index}
                               onClick={() => {
-                                event?.preventDefault();
-                                // @ts-expect-error
+                                event?.preventDefault(); // @ts-expect-error
                                 event?.target.parentElement?.remove();
                               }}
                             />
@@ -238,14 +339,6 @@ const Orders = () => {
                       })}
                     </div>
                   </div>
-                  <Input
-                    For="Amount"
-                    Label="Amount"
-                    placeholder="£200"
-                    Type="number"
-                    register={register("amount")}
-                    required={true}
-                  />
                   <Select
                     For="status"
                     Label="Status"
@@ -265,6 +358,7 @@ const Orders = () => {
           )}
           <Card
             id="orders-datatable-card"
+            cardClass="force-wrap"
             bodyID="orders-datatable"
             title="Orders"
           >

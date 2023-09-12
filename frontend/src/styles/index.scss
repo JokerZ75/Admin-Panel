@@ -463,5 +463,21 @@ form {
     width: 100%;
     padding: 0.5rem;
 
+    & label {
+      margin-right: 0.3rem;
+      background-color: var(--text);
+      color: var(--cardBackgrounds);
+    }
+
+  }
+}
+
+.force-wrap {
+  flex-basis: 100vw !important ;
+
+  @media (min-width: 2300px) {
+    &-half {
+      flex-basis: 49%!important ;
+    }
   }
 }

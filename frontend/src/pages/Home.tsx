@@ -130,10 +130,10 @@ const index = () => {
               <p>Loading...</p>
             )}
           </Card>
-          <Card bodyID="Graph" id="sales-graph" title="Sales Graph">
+          <Card bodyID="Graph" cardClass="force-wrap-half" id="sales-graph-half" title="Sales Graph">
             <Graph data={graphData} />
           </Card>
-          <Card title="Recent Orders">
+          <Card title="Recent Orders" cardClass="force-wrap-half">
             {(data && (
               <DataTable columns={columns} data={recentOrders} type="order" />
             )) || <p>Loading...</p>}

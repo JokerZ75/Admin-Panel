@@ -33,6 +33,10 @@ export const columns: ColumnDef<Order>[] = [
     enableHiding: false,
   },
   {
+    accessorKey: "_id",
+    header: "Order ID",
+  },
+  {
     header: "Name",
     accessorKey: "name",
   },

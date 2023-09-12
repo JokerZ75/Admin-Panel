@@ -38,7 +38,7 @@ const Profile = () => {
             <p className="card-text">Api Key: idj29skk10aje93d20</p>
             <button id="api-button">Regenerate API KEY</button>
           </Card>
-          <Card id="card-actions" bodyID="profile-actions" title="Actions">
+          <Card id="card-actions" cardClass="force-wrap" bodyID="profile-actions" title="Actions">
             <Form
               id="change-username-form"
               onSubmit={handleSubmitUsername((formValues) => {
