@@ -6,13 +6,13 @@ import { Form, Input, Select } from "../components/ui/Form";
 import { useFieldArray, useForm, set, FieldValues } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Pause } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 const Orders = () => {
   const [selectedRow, setSelectedRow] = useState<Order>({} as Order);
   const [products, setProducts] = useState<any[]>([]);
 
-  const { data, isError } = useQuery({
+  const { data, isError,refetch } = useQuery({
     queryKey: ["orders"],
     queryFn: async () => {
       const { data } = await axios.get("http://localhost:8008/orders");
@@ -28,6 +28,7 @@ const Orders = () => {
   React.useEffect(() => {
     setProducts([]);
     if (selectedRow.name) {
+      toast.success("Order Selected!");
       setValue("_id", selectedRow._id);
       setValue("name", selectedRow.name);
       setValue("email", selectedRow.email);
@@ -51,8 +52,9 @@ const Orders = () => {
     }
   }, [selectedRow]);
 
-  const handleSubmitOrder = (formValues: FieldValues, update=false ) => {
-    const payload = {
+  const handleSubmitOrder = (formValues: FieldValues, update = false) => {
+    console.log(formValues.products);
+    let payload = {
       name: formValues.name,
       email: formValues.email,
       address: formValues.address,
@@ -60,29 +62,44 @@ const Orders = () => {
       products: formValues.products.flatMap((product: any) => {
         return [
           {
-            item: product["product-name"],
-            quantity: parseInt(product["product-quantity"]),
-            price: parseInt(product["product-price"]),
+            item: product["item"],
+            quantity: parseInt(product["quantity"]),
+            price: parseInt(product["price"]),
           },
         ];
       }),
       amount: formValues.products.reduce((acc: number, product: any) => {
-        return acc + parseInt(product["product-quantity"]) * parseInt(product["product-price"]);
+        return (
+          acc +
+          parseInt(product["quantity"]) *
+            parseInt(product["price"])
+        );
       }, 0),
       status: formValues.status,
       shipped: formValues.shipped,
     };
     console.log(payload);
-    if (update){
+    if (update) {
       const requestURL = `http://localhost:8008/orders/update/${formValues._id}`;
       axios.put(requestURL, payload).then((res) => {
-        console.log(res);
+        if (res.status === 200) {
+          toast.success("Order Updated Successfully!");
+          refetch();
+        }
+        else if (res.status === 400) {
+          toast.error("Order Failed To Update!");
+        }
       });
     } else {
       axios.post("http://localhost:8008/orders/add", payload).then((res) => {
-        console.log(res);
-      }
-      );
+        if (res.status === 200) {
+          toast.success("Order Added Successfully!");
+          refetch();
+        }
+        else if (res.status === 400) {
+          toast.error("Order Failed To Add!");
+        }
+      });
     }
   };
 
@@ -169,39 +186,39 @@ const Orders = () => {
                       {products.map((product, index) => {
                         return (
                           <div key={index}>
-                            <label htmlFor={`product-name-${index}`}>
+                            <label htmlFor={`item-${index}`}>
                               Product
                             </label>
                             <input
                               type="text"
-                              id={`product-name-${index}`}
+                              id={`item-${index}`}
                               placeholder="Product Name"
-                              {...register(`products.${index}.product-name`)}
+                              {...register(`products.${index}.item`)}
                               value={product["item"]}
                             />
-                            <label htmlFor={`product-quantity-${index}`}>
+                            <label htmlFor={`quantity-${index}`}>
                               Quantity
                             </label>
                             <input
                               type="number"
-                              id={`product-quantity-${index}`}
+                              id={`quantity-${index}`}
                               placeholder="Product Quantity"
                               min={1}
                               defaultValue={1}
                               {...register(
-                                `products.${index}.product-quantity`
+                                `products.${index}.quantity`
                               )}
                               value={product["quantity"]}
                             />
-                            <label htmlFor={`product-price-${index}`}>
+                            <label htmlFor={`price-${index}`}>
                               Price
                             </label>
                             <input
                               type="number"
-                              id={`product-price-${index}`}
+                              id={`price-${index}`}
                               placeholder="Product Price In £"
                               min={1}
-                              {...register(`products.${index}.product-price`)}
+                              {...register(`products.${index}.price`)}
                               value={product["price"]}
                             />
                             <input
@@ -290,39 +307,39 @@ const Orders = () => {
                       {products.map((product, index) => {
                         return (
                           <div key={index}>
-                            <label htmlFor={`product-name-${index}`}>
+                            <label htmlFor={`item-${index}`}>
                               Product
                             </label>
                             <input
                               type="text"
-                              id={`product-name-${index}`}
+                              id={`item-${index}`}
                               placeholder="Product Name"
-                              {...register(`products.${index}.product-name`)}
+                              {...register(`products.${index}.item`)}
                               value={product["item"]}
                             />
-                            <label htmlFor={`product-quantity-${index}`}>
+                            <label htmlFor={`quantity-${index}`}>
                               Quantity
                             </label>
                             <input
                               type="number"
-                              id={`product-quantity-${index}`}
+                              id={`quantity-${index}`}
                               placeholder="Product Quantity"
                               min={1}
                               defaultValue={1}
                               {...register(
-                                `products.${index}.product-quantity`
+                                `products.${index}.quantity`
                               )}
                               value={product["quantity"]}
                             />
-                            <label htmlFor={`product-price-${index}`}>
+                            <label htmlFor={`price-${index}`}>
                               Price
                             </label>
                             <input
                               type="number"
-                              id={`product-price-${index}`}
+                              id={`price-${index}`}
                               placeholder="Product Price In £"
                               min={1}
-                              {...register(`products.${index}.product-price`)}
+                              {...register(`products.${index}.price`)}
                               value={product["price"]}
                             />
                             <input

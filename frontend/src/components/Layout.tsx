@@ -1,6 +1,8 @@
 import React, { FC, ReactNode, Suspense } from "react";
 import { Outlet } from "react-router-dom";
 import { Loading, Footer, Navbar } from "./";
+import { Toaster } from "react-hot-toast";
+
 
 const Layout: FC = ({ children }: any) => {
   return (
@@ -9,7 +11,8 @@ const Layout: FC = ({ children }: any) => {
         <Navbar />
       </header>
       <main>
-        <Suspense fallback={<Loading/>}>
+        <Suspense fallback={<Loading />}>
+          <Toaster />
           <Outlet />
         </Suspense>
       </main>
