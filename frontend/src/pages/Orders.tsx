@@ -4,21 +4,25 @@ import { columns, Order } from "../components/Data-table-Columns/OrdersPage";
 import { DataTable } from "../components/data-table-orders";
 import { Form, Input, Select } from "../components/ui/Form";
 import { useFieldArray, useForm, set, FieldValues } from "react-hook-form";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { usePost, useUpdate } from "../lib/hooks/use-post";
 
 const Orders = () => {
   const [selectedRow, setSelectedRow] = useState<Order>({} as Order);
   const [products, setProducts] = useState<any[]>([]);
 
-  const { data, isError,refetch } = useQuery({
+  const { data, isError, refetch } = useQuery({
     queryKey: ["orders"],
     queryFn: async () => {
       const { data } = await axios.get("http://localhost:8008/orders");
       return data as Order[];
     },
   });
+
+  const { mutate: addPost } = usePost();
+  const { mutate: updatePost } = useUpdate();
 
   const { register, control, handleSubmit, setValue, getValues } = useForm({});
   const AddProduct = () => {
@@ -52,9 +56,8 @@ const Orders = () => {
     }
   }, [selectedRow]);
 
-  const handleSubmitOrder = (formValues: FieldValues, update = false) => {
-    console.log(formValues.products);
-    let payload = {
+  const handleSubmitOrder = async (formValues: FieldValues, update = false) => {
+    const payload = {
       name: formValues.name,
       email: formValues.email,
       address: formValues.address,
@@ -69,37 +72,20 @@ const Orders = () => {
         ];
       }),
       amount: formValues.products.reduce((acc: number, product: any) => {
-        return (
-          acc +
-          parseInt(product["quantity"]) *
-            parseInt(product["price"])
-        );
+        return acc + parseInt(product["quantity"]) * parseInt(product["price"]);
       }, 0),
       status: formValues.status,
       shipped: formValues.shipped,
     };
-    console.log(payload);
     if (update) {
-      const requestURL = `http://localhost:8008/orders/update/${formValues._id}`;
-      axios.put(requestURL, payload).then((res) => {
-        if (res.status === 200) {
-          toast.success("Order Updated Successfully!");
-          refetch();
-        }
-        else if (res.status === 400) {
-          toast.error("Order Failed To Update!");
-        }
-      });
+      const newPayload = { ...payload, _id: formValues._id };
+      await updatePost(newPayload);
+      refetch();
+      setSelectedRow({} as Order);
     } else {
-      axios.post("http://localhost:8008/orders/add", payload).then((res) => {
-        if (res.status === 200) {
-          toast.success("Order Added Successfully!");
-          refetch();
-        }
-        else if (res.status === 400) {
-          toast.error("Order Failed To Add!");
-        }
-      });
+      await addPost(payload);
+      refetch();
+      setSelectedRow({} as Order);
     }
   };
 
@@ -186,9 +172,7 @@ const Orders = () => {
                       {products.map((product, index) => {
                         return (
                           <div key={index}>
-                            <label htmlFor={`item-${index}`}>
-                              Product
-                            </label>
+                            <label htmlFor={`item-${index}`}>Product</label>
                             <input
                               type="text"
                               id={`item-${index}`}
@@ -204,14 +188,10 @@ const Orders = () => {
                               id={`quantity-${index}`}
                               placeholder="Product Quantity"
                               min={1}
-                              {...register(
-                                `products.${index}.quantity`
-                              )}
+                              {...register(`products.${index}.quantity`)}
                               defaultValue={product["quantity"]}
                             />
-                            <label htmlFor={`price-${index}`}>
-                              Price
-                            </label>
+                            <label htmlFor={`price-${index}`}>Price</label>
                             <input
                               type="number"
                               id={`price-${index}`}
@@ -306,9 +286,7 @@ const Orders = () => {
                       {products.map((product, index) => {
                         return (
                           <div key={index}>
-                            <label htmlFor={`item-${index}`}>
-                              Product
-                            </label>
+                            <label htmlFor={`item-${index}`}>Product</label>
                             <input
                               type="text"
                               id={`item-${index}`}
@@ -325,14 +303,10 @@ const Orders = () => {
                               placeholder="Product Quantity"
                               min={1}
                               defaultValue={1}
-                              {...register(
-                                `products.${index}.quantity`
-                              )}
+                              {...register(`products.${index}.quantity`)}
                               value={product["quantity"]}
                             />
-                            <label htmlFor={`price-${index}`}>
-                              Price
-                            </label>
+                            <label htmlFor={`price-${index}`}>Price</label>
                             <input
                               type="number"
                               id={`price-${index}`}

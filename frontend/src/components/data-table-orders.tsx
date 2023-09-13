@@ -35,6 +35,7 @@ function DataTable<TData, TValue>({
   columns,
   data,
   setRow,
+
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -72,7 +73,6 @@ function DataTable<TData, TValue>({
   React.useEffect(() => {
     const rows = table.getRowModel().rows;
     const selectedRows = rows.filter((row) => row.getIsSelected());
-    console.log(selectedRows);
     if (selectedRows.length === 1) {
       setPreviousRow(selectedRows[0]);
       setRow(selectedRows[0]._valuesCache as Order);
