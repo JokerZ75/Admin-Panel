@@ -400,6 +400,10 @@ form {
   & input[type="submit"] {
     @include buttonMix();
   }
+  & button {
+    @include buttonMix();
+    width: 100%;
+  }
 }
 
 #upload-button {
@@ -468,6 +472,8 @@ form {
       background-color: var(--text);
       color: var(--cardBackgrounds);
     }
+
+
 
   }
 }

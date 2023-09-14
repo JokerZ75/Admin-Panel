@@ -61,14 +61,14 @@ export const useDelete = () => {
         mutationKey: ["order", "delete"],
         mutationFn: async (id: string) => {
         const response = await axios.delete(
-            `http://localhost:8008/orders/delete/${id}`
+            `http://localhost:8008/orders/${id}`
         );
         return response.data;
         },
         onSuccess: () => {
         toast.success("Order deleted successfully");
         },
-        onError: () => {
+        onError: (error) => {
         toast.error("Something went wrong");
         },
     });

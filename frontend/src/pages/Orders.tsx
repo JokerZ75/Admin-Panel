@@ -7,22 +7,22 @@ import { useFieldArray, useForm, set, FieldValues } from "react-hook-form";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { usePost, useUpdate } from "../lib/hooks/use-post";
+import { useDelete, usePost, useUpdate } from "../lib/hooks/use-post";
 
 const Orders = () => {
   const [selectedRow, setSelectedRow] = useState<Order>({} as Order);
   const [products, setProducts] = useState<any[]>([]);
+  const { mutate: addPost, isSuccess: addSuccess } = usePost();
+  const { mutate: updatePost, isSuccess: updateSuccess } = useUpdate();
+  const { mutate: deletePost, isSuccess: deleteSuccess } = useDelete();
 
   const { data, isError, refetch } = useQuery({
-    queryKey: ["orders"],
+    queryKey: ["orders", {updateSuccess: updateSuccess, addSuccess: addSuccess, deleteSuccess: deleteSuccess}],
     queryFn: async () => {
       const { data } = await axios.get("http://localhost:8008/orders");
       return data as Order[];
     },
   });
-
-  const { mutate: addPost } = usePost();
-  const { mutate: updatePost } = useUpdate();
 
   const { register, control, handleSubmit, setValue, getValues } = useForm({});
   const AddProduct = () => {
@@ -79,12 +79,10 @@ const Orders = () => {
     };
     if (update) {
       const newPayload = { ...payload, _id: formValues._id };
-      await updatePost(newPayload);
-      refetch();
+      updatePost(newPayload);
       setSelectedRow({} as Order);
     } else {
-      await addPost(payload);
-      refetch();
+      addPost(payload);
       setSelectedRow({} as Order);
     }
   };
@@ -116,7 +114,10 @@ const Orders = () => {
             )}
           </Card>
           {selectedRow.name ? (
-            <Card title="Update Order (Unselect to Create)">
+            <Card
+              cardClass="force-wrap"
+              title="Update Order (Unselect to Create)"
+            >
               <p className="card-text">
                 <Form
                   id="order-form"
@@ -227,11 +228,25 @@ const Orders = () => {
                     register={register("shipped")}
                   />
                   <input type="submit" />
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      event?.preventDefault();
+                      deletePost(selectedRow._id);
+                      await refetch();
+                      setSelectedRow({} as Order);
+                    }}
+                  >
+                    Delete Order
+                  </button>
                 </Form>
               </p>
             </Card>
           ) : (
-            <Card title="Create Order (Select From Table to Update)">
+            <Card
+              cardClass="force-wrap"
+              title="Create Order (Select From Table to Update)"
+            >
               <p className="card-text">
                 <Form
                   id="order-form"
