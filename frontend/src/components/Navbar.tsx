@@ -7,6 +7,7 @@ import { url } from "inspector";
 const Navbar: FC = () => {
   const { setDarkMode, darkMode } = useDarkMode();
   const [open, setOpen] = useState(false);
+  const [url , setUrl] = useState(window.location.pathname);
   const navbar = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -17,6 +18,7 @@ const Navbar: FC = () => {
     }
   }, [open]);
 
+
   return (
     <>
       <div id="nav-container">
@@ -26,12 +28,26 @@ const Navbar: FC = () => {
             <div className="burger-line"></div>
             <div className="burger-line"></div>
           </div>
-          <button onClick={() => setDarkMode(!darkMode)} id="theme-toggle" className="link"><h1 className="link-text">{ darkMode == true ? <FaSun/> : <FaMoon/> }</h1></button>
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            id="theme-toggle"
+            className="link"
+          >
+            <h1 className="link-text">
+              {darkMode == true ? <FaSun /> : <FaMoon />}
+            </h1>
+          </button>
         </div>
         <nav id="navbar" ref={navbar}>
-          <Link className="link" to={"/"}><h1 className="link-text">Dashboard</h1></Link>
-          <Link className="link" to={"/orders"}><h1 className="link-text">Orders</h1></Link>
-          <Link className="link" to={"/profile"}><h1 className="link-text">Profile</h1></Link>
+          <Link className="link" to={"/dashboard"}>
+            <h1 className="link-text">Dashboard</h1>
+          </Link>
+          <Link className="link" to={"/orders"}>
+            <h1 className="link-text">Orders</h1>
+          </Link>
+          <Link className="link" to={"/profile"}>
+            <h1 className="link-text">Profile</h1>
+          </Link>
         </nav>
       </div>
     </>

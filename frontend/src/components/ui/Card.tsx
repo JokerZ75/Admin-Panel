@@ -3,7 +3,7 @@ import index from '../../pages/Home';
 
 
 interface CardsProps {
-  children: React.ReactNode[];
+  children: React.ReactNode[] | React.ReactNode;
   holderID?:string
 }
 
