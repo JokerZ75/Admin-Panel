@@ -3,11 +3,12 @@ import React, { useState } from "react";
 import { columns, Order } from "../components/Data-table-Columns/OrdersPage";
 import { DataTable } from "../components/data-table-orders";
 import { Form, Input, Select } from "../components/ui/Form";
-import { useFieldArray, useForm, set, FieldValues } from "react-hook-form";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useForm, FieldValues } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useDelete, usePost, useUpdate } from "../lib/hooks/use-post";
+import { useAuthHeader } from "react-auth-kit";
 
 const Orders = () => {
   const [selectedRow, setSelectedRow] = useState<Order>({} as Order);
@@ -15,11 +16,22 @@ const Orders = () => {
   const { mutate: addPost, isSuccess: addSuccess } = usePost();
   const { mutate: updatePost, isSuccess: updateSuccess } = useUpdate();
   const { mutate: deletePost, isSuccess: deleteSuccess } = useDelete();
-
+  const auth = useAuthHeader();
   const { data, isError, refetch } = useQuery({
-    queryKey: ["orders", {updateSuccess: updateSuccess, addSuccess: addSuccess, deleteSuccess: deleteSuccess}],
+    queryKey: [
+      "orders",
+      {
+        updateSuccess: updateSuccess,
+        addSuccess: addSuccess,
+        deleteSuccess: deleteSuccess,
+      },
+    ],
     queryFn: async () => {
-      const { data } = await axios.get("http://localhost:8008/orders");
+      const { data } = await axios.get("http://localhost:8008/orders", {
+        headers: {
+          Authorization: `${auth()}`,
+        },
+      });
       return data as Order[];
     },
   });
@@ -95,22 +107,34 @@ const Orders = () => {
         </div>
         <Cards>
           <Card cardClass="smaller-card" title="Orders In Last 30 Days">
-            <p className="card-text-large">
-              {
-                data?.filter((order: Order) => {
-                  return (
-                    new Date(order.createdAt) <
-                      new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) &&
-                    new Date(order.createdAt) >
-                      new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-                  );
-                }).length
-              }
-            </p>
+            {(data && (
+              <p className="card-text-large">
+                {
+                  data?.filter((order: Order) => {
+                    return (
+                      new Date(order.createdAt) <
+                        new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) &&
+                      new Date(order.createdAt) >
+                        new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+                    );
+                  }).length
+                }
+              </p>
+            )) || <p>Loading...</p>}
+            {isError && (
+              <p>
+                There was an error fetching the data please try again later...
+              </p>
+            )}
           </Card>
           <Card cardClass="smaller-card" title="Total Orders">
             {(data && <p className="card-text-large">{data?.length}</p>) || (
               <p>Loading...</p>
+            )}
+            {isError && (
+              <p>
+                There was an error fetching the data please try again later...
+              </p>
             )}
           </Card>
           {selectedRow.name ? (

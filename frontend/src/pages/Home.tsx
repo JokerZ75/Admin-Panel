@@ -11,6 +11,7 @@ import axios from "axios";
 import { json } from "stream/consumers";
 import { set } from "react-hook-form";
 import useEffect from "react";
+import { useAuthHeader } from "react-auth-kit";
 
 interface Product {
   item: string;
@@ -33,10 +34,16 @@ const index = () => {
     "November",
     "December",
   ];
+
+  const auth = useAuthHeader();
   const { data, isError } = useQuery({
     queryKey: ["orders"],
     queryFn: async () => {
-      const { data } = await axios.get("http://localhost:8008/orders");
+      const { data } = await axios.get("http://localhost:8008/orders", {
+        headers: {
+          Authorization: `${auth()}`,
+        },
+      });
       let products = await data.flatMap((order: RecentOrder) => {
         return order.products;
       });

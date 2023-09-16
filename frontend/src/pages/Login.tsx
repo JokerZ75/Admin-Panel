@@ -6,20 +6,30 @@ import { Card, Cards } from "@/components/ui/Card";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useSignIn } from "react-auth-kit";
 
 const Login = () => {
   const { register, handleSubmit, getValues } = useForm();
+  const signIn = useSignIn();
 
-  const { mutate, data } = useMutation({
+  const { mutate, data, isError } = useMutation({
     mutationKey: [{
         username: getValues("username"),
         password: getValues("password"),
     }],
     mutationFn: async (data: any) => {
-      const res = await axios.post("http://localhost:8008/users/", data);
+      const res = await axios.post("http://localhost:8008/users/login", data);
       return res.data;
     },
     onSuccess: (data) => {
+      signIn({
+        token: data.token,
+        expiresIn: data.expiresIn,
+        tokenType: "Bearer",
+        authState: { username: data.user},
+        refreshToken: data.refreshToken,
+        refreshTokenExpireIn: 3600,
+      })
       toast.success("Successfully logged in");
     },
     onError: (error) => {
@@ -58,6 +68,7 @@ const Login = () => {
                   register={register("password")}
                 />
                 <input type="submit" value="Login" />
+                {isError && <p>Invalid Username Or Password.</p>}
               </Form>
             </div>
           </Card>

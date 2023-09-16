@@ -13,6 +13,7 @@ const orderSchema = new Schema(
     amount: { type: Number, required: true },
     status: { type: String, required: true, trim: true },
     shipped: { type: String, required: true, trim: true },
+    owner: { type: ObjectId, required: true, ref: "User" },
   },
   {
     timestamps: true,

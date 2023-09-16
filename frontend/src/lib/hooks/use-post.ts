@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useAuthHeader } from "react-auth-kit";
 
 interface Payload {
   _id?: string;
@@ -15,12 +16,18 @@ interface Payload {
 }
 
 export const usePost = () => {
+  const authHeader = useAuthHeader();
   const { mutate, isLoading, isError, isSuccess } = useMutation({
     mutationKey: ["order", "add"],
     mutationFn: async (data: Payload) => {
       const response = await axios.post(
         "http://localhost:8008/orders/add",
-        data
+        data,
+        {
+          headers: {
+            Authorization: authHeader(),
+          },
+        }
       );
       return response.data;
     },
@@ -57,21 +64,19 @@ export const useUpdate = () => {
 };
 
 export const useDelete = () => {
-    const { mutate, isLoading, isError, isSuccess } = useMutation({
-        mutationKey: ["order", "delete"],
-        mutationFn: async (id: string) => {
-        const response = await axios.delete(
-            `http://localhost:8008/orders/${id}`
-        );
-        return response.data;
-        },
-        onSuccess: () => {
-        toast.success("Order deleted successfully");
-        },
-        onError: (error) => {
-        toast.error("Something went wrong");
-        },
-    });
-    
-    return { mutate, isLoading, isError, isSuccess };
-    }
+  const { mutate, isLoading, isError, isSuccess } = useMutation({
+    mutationKey: ["order", "delete"],
+    mutationFn: async (id: string) => {
+      const response = await axios.delete(`http://localhost:8008/orders/${id}`);
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.success("Order deleted successfully");
+    },
+    onError: (error) => {
+      toast.error("Something went wrong");
+    },
+  });
+
+  return { mutate, isLoading, isError, isSuccess };
+};

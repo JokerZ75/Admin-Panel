@@ -3,6 +3,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Login } from "./pages";
 import Layout from "./components/Layout";
 import { DarkModeProvider } from "./lib/context/darkModeContext";
+import { AuthProvider, RequireAuth } from "react-auth-kit";
+import refreshAuthLogic from "./lib/refreashApi";
 
 const Home = lazy(() => import("./pages/Home"));
 const Signup = lazy(() => import("./pages/Signup"));
@@ -16,9 +18,30 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <Login /> },
       { path: "/signup", element: <Signup /> },
-      { path: "/dashboard", element: <Home /> },
-      { path: "/orders", element: <Orders /> },
-      { path: "/profile", element: <Profile /> },
+      {
+        path: "/dashboard",
+        element: (
+          <RequireAuth loginPath="/">
+            <Home />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/orders",
+        element: (
+          <RequireAuth loginPath="/">
+            <Orders />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/profile",
+        element: (
+          <RequireAuth loginPath="/">
+            <Profile />
+          </RequireAuth>
+        ),
+      },
     ],
   },
 ]);
@@ -27,7 +50,15 @@ function App() {
   return (
     <>
       <DarkModeProvider>
-        <RouterProvider router={router} />
+        <AuthProvider
+          authType={"cookie"}
+          authName={"_auth"}
+          cookieDomain={window.location.hostname}
+          cookieSecure={false}
+          refresh={refreshAuthLogic}
+        >
+          <RouterProvider router={router} />
+        </AuthProvider>
       </DarkModeProvider>
     </>
   );

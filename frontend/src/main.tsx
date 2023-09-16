@@ -6,13 +6,14 @@ import "./styles/desktop.scss";
 import "./styles/global.scss";
 import { Layout } from "./components";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { AuthProvider } from "react-auth-kit";
 
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <App />
+        <App />
     </QueryClientProvider>
   </React.StrictMode>
 );

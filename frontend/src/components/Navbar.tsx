@@ -3,12 +3,17 @@ import { FaSun, FaMoon } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useDarkMode } from "../lib/context/darkModeContext";
 import { url } from "inspector";
+import { useSignOut, useIsAuthenticated, createRefresh } from 'react-auth-kit';
+import axios from "axios";
+
 
 const Navbar: FC = () => {
   const { setDarkMode, darkMode } = useDarkMode();
   const [open, setOpen] = useState(false);
-  const [url , setUrl] = useState(window.location.pathname);
+  const [url, setUrl] = useState(window.location.pathname);
   const navbar = useRef<HTMLDivElement>(null);
+  const signOut = useSignOut();
+  const isAuthenticated = useIsAuthenticated();
 
   useEffect(() => {
     if (open) {
@@ -17,7 +22,6 @@ const Navbar: FC = () => {
       navbar.current?.classList.remove("open");
     }
   }, [open]);
-
 
   return (
     <>
@@ -48,6 +52,17 @@ const Navbar: FC = () => {
           <Link className="link" to={"/profile"}>
             <h1 className="link-text">Profile</h1>
           </Link>
+          {isAuthenticated() && (
+            <Link
+              className="link"
+              to={"/"}
+              onClick={() => {
+                signOut();
+              }}
+            >
+              <h1 className="link-text">Logout</h1>
+            </Link>
+          )}
         </nav>
       </div>
     </>
