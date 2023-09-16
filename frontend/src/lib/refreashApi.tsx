@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useAuthHeader, createRefresh } from "react-auth-kit";
 
-// @ts-ignore
 const refreshAuthLogic = createRefresh({
   interval: 0.15,
+  // @ts-expect-error
   refreshApiCallback: async ({ refreshToken,
 authToken }) => {
     try {
