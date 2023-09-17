@@ -4,6 +4,7 @@ const router = require("express").Router();
 let User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 let refreshTokens: any[] = [];
 
 function Authenticate(req, res, next) {
@@ -34,7 +35,7 @@ function Authenticate(req, res, next) {
 router.route("/login").post(async (req, res) => {
   const password = req.body.password;
   const user = await User.findOne(
-    { username: req.body.username } || { email: req.body.email }
+    { $or: [{ username: req.body.username }, { email: req.body.username }] },
   );
 
   if (!user) {
@@ -120,7 +121,7 @@ router.route("/token").post(Authenticate, async (req, res) => {
   );
 });
 
-// token logout 
+// token logout
 
 router.route("/logout").post(Authenticate, async (req, res) => {
   const refreshtoken = req.body.refreshToken;
@@ -137,12 +138,28 @@ router.route("/add").post(async (req, res) => {
   const email = req.body.email;
   const password = await bcrypt.hash(req.body.password, 10);
 
-  const newUser = new User({ username, email, password })
-    .save()
-    .then(() => res.json({ message: "User added!", statusCode: 200 }))
-    .catch((err) =>
-      res.status(400).json({ message: "Error: " + err, statusCode: 400 })
-    );
+  // Check if user exists
+
+  const UserExists = await User.find(
+    { $or: [{ username: username }, { email: email }] },
+  ).then((user) => {
+    if (user.length > 0) {
+      return true;
+    }
+  });
+
+  if (!UserExists) {
+    const newUser = new User({ username, email, password })
+      .save()
+      .then(() => res.json({ message: "User added!", statusCode: 200 }))
+      .catch((err) =>
+        res.status(400).json({ message: "Error: " + err, statusCode: 400 })
+      );
+  }
+
+  return res
+    .status(409)
+    .json({ message: "Error: User already exists", statusCode: 409 });
 });
 
 module.exports = router;

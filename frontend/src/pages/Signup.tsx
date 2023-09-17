@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { Form, Input } from "../components/ui/Form";
 import { Card, Cards } from "@/components/ui/Card";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { get } from "http";
 import toast from "react-hot-toast";
 
@@ -20,20 +20,21 @@ const Signup = () => {
     mutationKey: ["signup", getValues()],
     mutationFn: async (data: any) => {
       console.log(data);
-      const res = await axios.post(
-        "http://localhost:8008/users/add",
-        data
-      );
+      const res = await axios.post("http://localhost:8008/users/add", data);
       console.log(res);
       return res.data;
     },
     onSuccess: (data) => {
-        console.log(data);
+      console.log(data);
       toast.success("Successfully signed up");
     },
-    onError: (error) => {
-        console.log(error);
-      toast.error("Something went wrong, try again later");
+    onError: (error : any) => {
+      console.log(error);
+      if (error.response.status === 409) {
+        toast.error("Username or email already taken");
+      } else {
+        toast.error("Something went wrong, try again later");
+      }
     },
   });
 
