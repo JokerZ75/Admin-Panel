@@ -19,17 +19,14 @@ const Signup = () => {
   const { mutate, isLoading, isError, error, data } = useMutation({
     mutationKey: ["signup", getValues()],
     mutationFn: async (data: any) => {
-      console.log(data);
       const res = await axios.post("http://localhost:8008/users/add", data);
-      console.log(res);
       return res.data;
     },
     onSuccess: (data) => {
       console.log(data);
       toast.success("Successfully signed up");
     },
-    onError: (error : any) => {
-      console.log(error);
+    onError: (error : any) => {;
       if (error.response.status === 409) {
         toast.error("Username or email already taken");
       } else {

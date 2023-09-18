@@ -1,11 +1,35 @@
+import { File } from "buffer";
 import { relative } from "path";
 
 const router = require("express").Router();
 let User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
 let refreshTokens: any[] = [];
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+  destination: function (req: any, file: File, cb: Function) {
+    cb(null, "uploads/");
+  },
+  filename: function (req: any, file: any, cb: Function) {
+    cb(null, req.user._id + ".jpg");
+  },
+});
+
+const fileFilter = (req: any, file: any, cb: Function) => {
+  if (file.mimetype == "image/jpeg" || file.mimetype == "image/png") {
+    cb(null, true);
+  } else {
+    return cb(null, false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 1024 * 1024 * 20 },
+  fileFilter: fileFilter,
+});
 
 function Authenticate(req, res, next) {
   const authHeader = req.header("Authorization");
@@ -34,9 +58,9 @@ function Authenticate(req, res, next) {
 // Get User by username and password
 router.route("/login").post(async (req, res) => {
   const password = req.body.password;
-  const user = await User.findOne(
-    { $or: [{ username: req.body.username }, { email: req.body.username }] },
-  );
+  const user = await User.findOne({
+    $or: [{ username: req.body.username }, { email: req.body.username }],
+  });
 
   if (!user) {
     return res
@@ -140,9 +164,9 @@ router.route("/add").post(async (req, res) => {
 
   // Check if user exists
 
-  const UserExists = await User.find(
-    { $or: [{ username: username }, { email: email }] },
-  ).then((user) => {
+  const UserExists = await User.find({
+    $or: [{ username: username }, { email: email }],
+  }).then((user) => {
     if (user.length > 0) {
       return true;
     }
@@ -162,6 +186,50 @@ router.route("/add").post(async (req, res) => {
     .json({ message: "Error: User already exists", statusCode: 409 });
 });
 
-module.exports = router;
+// upload image to fileSystem
+router
+  .route("/upload")
+  .post(Authenticate, upload.single("profileImage"), async (req, res) => {
+    if (!req.file) {
+      return res
+        .status(400)
+        .json({ message: "Error: No image uploaded", statusCode: 400 });
+    }
+    if (req.file.mimetype != "image/jpeg" && req.file.mimetype != "image/png") {
+      return res
+        .status(402)
+        .json({ message: "Error: Invalid image type", statusCode: 402 });
+    }
+    if (req.file.size > 1024 * 1024 * 20) {
+      return res
+        .status(413)
+        .json({ message: "Error: Image size too large", statusCode: 413 });
+    }
+
+    let user = await User.findById(req.user._id);
+
+    user.profileImage = req.file.filename;
+    await user.save();
+    
+
+    return res.json({
+      message: "Image uploaded!",
+      statusCode: 200,
+    });
+  });
+
+// Get user by id
+router.route("/").get(Authenticate, (req, res) => {
+  User.findById(req.user._id)
+    .then((user) => res.json({
+      username: user.username,
+      email: user.email,
+      profileImage: `http://localhost:8008/uploads/${user.profileImage}`,
+    }))
+    .catch((err) => res.status(400).json({ message: "Error: " + err }));
+
+});
 
 export {};
+
+module.exports = router;

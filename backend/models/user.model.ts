@@ -21,6 +21,12 @@ const userSchema = new Schema({
         trim: true,
         minlength: 3
     },
+    profileImage: {
+        type: String,
+        required: false,
+        trim: true,
+        minlength: 3
+    },
 }, {
     timestamps: true,
 });

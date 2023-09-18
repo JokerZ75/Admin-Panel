@@ -43,12 +43,18 @@ export const usePost = () => {
 };
 
 export const useUpdate = () => {
+  const authHeader = useAuthHeader();
   const { mutate, isLoading, isError, isSuccess } = useMutation({
     mutationKey: ["order", "update"],
     mutationFn: async (data: Payload) => {
       const response = await axios.put(
         `http://localhost:8008/orders/update/${data._id}`,
-        data
+        data,
+        {
+          headers: {
+            Authorization: authHeader(),
+          },
+        }
       );
       return response.data;
     },
@@ -64,16 +70,22 @@ export const useUpdate = () => {
 };
 
 export const useDelete = () => {
+  const authHeader = useAuthHeader();
   const { mutate, isLoading, isError, isSuccess } = useMutation({
     mutationKey: ["order", "delete"],
     mutationFn: async (id: string) => {
-      const response = await axios.delete(`http://localhost:8008/orders/${id}`);
+      const response = await axios.delete(`http://localhost:8008/orders/${id}`, {
+        headers: {
+          Authorization: authHeader(),
+        },
+      });
       return response.data;
     },
     onSuccess: () => {
       toast.success("Order deleted successfully");
     },
     onError: (error) => {
+      console.log(error);
       toast.error("Something went wrong");
     },
   });

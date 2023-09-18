@@ -140,14 +140,12 @@ router.route("/update/:id").put(Authenticate, (req, res) => {
 router.route("/:id").delete(Authenticate, (req, res) => {
   const id = req.params.id;
   const user = req.user._id;
-  Order.find({ _id: id, owner: user })
-    .then((order) => {
-      order
-        .remove()
-        .then(() => res.json({ message: "Order deleted!", statusCode: 200 }));
+  Order.findOneAndRemove({ _id: id, owner: user })
+    .then(() => {
+       return res.json({ message: "Order deleted!", statusCode: 200 });
     })
     .catch((err) => {
-      res
+      return res
         .status(400)
         .json({ message: "Error: Failed to Delete", statusCode: 400 });
     });
