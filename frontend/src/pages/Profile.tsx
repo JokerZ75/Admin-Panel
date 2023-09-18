@@ -8,8 +8,31 @@ import toast from "react-hot-toast";
 import { useAuthHeader } from "react-auth-kit";
 import { Loading } from "@/components";
 import React from "react";
+import { useUpdateAccount } from "@/lib/hooks/use-updateAcount";
+import { get } from "http";
 
 const Profile = () => {
+  const { data, refetch } = useQuery({
+    queryKey: ["profile", "details"],
+    queryFn: async () => {
+      const data = await axios.get("http://localhost:8008/users/", {
+        headers: {
+          Authorization: authHeader(),
+        },
+      });
+      console.log(data);
+      return data.data as unknown as {
+        username: string;
+        email: string;
+        profileImage: string;
+      };
+    },
+    onSuccess: (data) => {},
+    onError: (error) => {
+      toast.error("Something went wrong, try again later");
+    },
+  });
+
   const {
     register: changeEmailReg,
     control,
@@ -19,8 +42,11 @@ const Profile = () => {
     useForm();
   const { register: deleteAccountReg, handleSubmit: deleteAccountSubmit } =
     useForm();
-  const { register: changeUsernameReg, handleSubmit: handleSubmitUsername } =
-    useForm();
+  const {
+    register: changeUsernameReg,
+    handleSubmit: handleSubmitUsername,
+    getValues: getUserValues,
+  } = useForm();
   const { register: profilePicture, handleSubmit: handleSubmitProfilePicture } =
     useForm();
 
@@ -41,6 +67,7 @@ const Profile = () => {
     },
     onSuccess: () => {
       toast.success("Image Uploaded Successfully");
+      window.location.reload();
     },
     onError: (err: any) => {
       console.log(err.response.status);
@@ -53,27 +80,11 @@ const Profile = () => {
       }
     },
   });
-
-  const { data } = useQuery({
-    queryKey: ["profile", "details"],
-    queryFn: async () => {
-      const data = await axios.get("http://localhost:8008/users/", {
-        headers: {
-          Authorization: authHeader(),
-        },
-      });
-      console.log(data);
-      return data.data as unknown as {
-        username: string;
-        email: string;
-        profileImage: string;
-      };
-    },
-    onSuccess: (data) => {},
-    onError: (error) => {
-      toast.error("Something went wrong, try again later");
-    },
-  });
+  const { mutate: updateUsername } = useUpdateAccount(
+    "username",
+    getUserValues().username,
+    refetch()
+  );
 
   return (
     <>
@@ -95,7 +106,6 @@ const Profile = () => {
                 const formData = new FormData();
                 formData.append("profileImage", formValues.profileImage[0]);
                 uploadImage(formData);
-                window.location.reload();
               })}
             >
               <input
@@ -127,7 +137,7 @@ const Profile = () => {
               id="change-username-form"
               onSubmit={handleSubmitUsername((formValues) => {
                 event?.preventDefault();
-                console.log(formValues);
+                updateUsername(formValues);
               })}
             >
               <FormItem

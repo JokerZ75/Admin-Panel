@@ -31,6 +31,16 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
+async function UserExists(username, email) {
+  return await User.find({
+    $or: [{ username: username }, { email: email }],
+  }).then((user) => {
+    if (user.length > 0) {
+      return true;
+    }
+  });
+}
+
 function Authenticate(req, res, next) {
   const authHeader = req.header("Authorization");
   const token = authHeader && authHeader.split(" ")[1];
@@ -164,26 +174,20 @@ router.route("/add").post(async (req, res) => {
 
   // Check if user exists
 
-  const UserExists = await User.find({
-    $or: [{ username: username }, { email: email }],
-  }).then((user) => {
-    if (user.length > 0) {
-      return true;
-    }
-  });
+  const userExists = await UserExists(username, email);
 
-  if (!UserExists) {
+  if (!userExists) {
     const newUser = new User({ username, email, password })
       .save()
       .then(() => res.json({ message: "User added!", statusCode: 200 }))
       .catch((err) =>
         res.status(400).json({ message: "Error: " + err, statusCode: 400 })
       );
+  } else {
+    return res
+      .status(409)
+      .json({ message: "Error: User already exists", statusCode: 409 });
   }
-
-  return res
-    .status(409)
-    .json({ message: "Error: User already exists", statusCode: 409 });
 });
 
 // upload image to fileSystem
@@ -210,7 +214,6 @@ router
 
     user.profileImage = req.file.filename;
     await user.save();
-    
 
     return res.json({
       message: "Image uploaded!",
@@ -221,13 +224,76 @@ router
 // Get user by id
 router.route("/").get(Authenticate, (req, res) => {
   User.findById(req.user._id)
-    .then((user) => res.json({
-      username: user.username,
-      email: user.email,
-      profileImage: `http://localhost:8008/uploads/${user.profileImage}`,
-    }))
+    .then((user) =>
+      res.json({
+        username: user.username,
+        email: user.email,
+        profileImage: `http://localhost:8008/uploads/${user.profileImage}`,
+      })
+    )
     .catch((err) => res.status(400).json({ message: "Error: " + err }));
+});
 
+// Update each user field
+
+router.route("/update/username").put(Authenticate, async (req, res) => {
+  const userExists = await UserExists(req.body.username, "null");
+  if (!userExists) {
+    User.findById(req.user._id)
+      .then((user) => {
+        user.username = req.body.username;
+        user
+          .save()
+          .then(() =>
+            res.json({ message: "Username updated!", statusCode: 200 })
+          )
+          .catch((err) =>
+            res.status(400).json({ message: "Error: " + err, statusCode: 400 })
+          );
+      })
+      .catch((err) =>
+        res.status(400).json({ message: "Error: " + err, statusCode: 400 })
+      );
+  } else {
+    res
+      .status(409)
+      .json({ message: "Error: User already exists", statusCode: 409 });
+  }
+});
+
+router.route("/update/email").put(Authenticate, (req, res) => {
+  if (!UserExists("", req.body.email)) {
+    User.findById(req.user._id)
+      .then((user) => {
+        user.email = req.body.email;
+        user
+          .save()
+          .then(() => res.json({ message: "Email updated!", statusCode: 200 }))
+          .catch((err) =>
+            res.status(400).json({ message: "Error: " + err, statusCode: 400 })
+          );
+      })
+      .catch((err) =>
+        res.status(400).json({ message: "Error: " + err, statusCode: 400 })
+      );
+  }
+
+  return res
+    .status(409)
+    .json({ message: "Error: User already exists", statusCode: 409 });
+});
+
+router.route("/update/password").put(Authenticate, async (req, res) => {
+  const password = await bcrypt.hash(req.body.password, 10);
+  User.findById(req.user._id).then((user) => {
+    user.password = password;
+    user
+      .save()
+      .then(() => res.json({ message: "Password updated!", statusCode: 200 }))
+      .catch((err) =>
+        res.status(400).json({ message: "Error: " + err, statusCode: 400 })
+      );
+  });
 });
 
 export {};
