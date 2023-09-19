@@ -261,8 +261,9 @@ router.route("/update/username").put(Authenticate, async (req, res) => {
   }
 });
 
-router.route("/update/email").put(Authenticate, (req, res) => {
-  if (!UserExists("", req.body.email)) {
+router.route("/update/email").put(Authenticate, async (req, res) => {
+  const userExists = await UserExists("", req.body.email);
+  if (!userExists) {
     User.findById(req.user._id)
       .then((user) => {
         user.email = req.body.email;
@@ -276,11 +277,11 @@ router.route("/update/email").put(Authenticate, (req, res) => {
       .catch((err) =>
         res.status(400).json({ message: "Error: " + err, statusCode: 400 })
       );
+  } else {
+    return res
+      .status(409)
+      .json({ message: "Error: User already exists", statusCode: 409 });
   }
-
-  return res
-    .status(409)
-    .json({ message: "Error: User already exists", statusCode: 409 });
 });
 
 router.route("/update/password").put(Authenticate, async (req, res) => {
@@ -294,6 +295,50 @@ router.route("/update/password").put(Authenticate, async (req, res) => {
         res.status(400).json({ message: "Error: " + err, statusCode: 400 })
       );
   });
+});
+
+router.route("/update/delete").post(Authenticate, async (req, res) => {
+  const userFound = await User.find({
+    username: req.body.username,
+  });
+  if (
+    userFound.length > 0 &&
+    userFound[0]._id.toString() == req.user._id.toString()
+  ) {
+    User.findByIdAndDelete(req.user._id)
+      .then(async () => {
+        console.log(refreshTokens);
+        // remove refresh token
+        refreshTokens = refreshTokens.filter(
+          (token) => token !== req.body.refreshToken
+        );
+        // remove profile image
+        const fs = require("fs");
+        const path = require("path");
+        const filePath = path.join(
+          __dirname,
+          "../uploads/" + req.user._id + ".jpg"
+        );
+        fs.unlink(filePath, (err: any) => {
+          if (err) {
+            console.error(err);
+            return;
+          }
+        });
+        console.log(refreshTokens);
+        return res.json({
+          message: "User deleted!",
+          statusCode: 200,
+        });
+      })
+      .catch((err) =>
+        res.status(400).json({ message: "Error: " + err, statusCode: 400 })
+      );
+  } else {
+    return res
+      .status(401)
+      .json({ message: "Error: Unauthorized", statusCode: 401 });
+  }
 });
 
 export {};

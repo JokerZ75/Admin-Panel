@@ -1,15 +1,12 @@
 import { Cards, Card } from "@/components/ui/Card";
 import { Form } from "@/components/ui/Form";
 import FormItem from "../components/ui/Form/Form-Item";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useAuthHeader } from "react-auth-kit";
-import { Loading } from "@/components";
-import React from "react";
 import { useUpdateAccount } from "@/lib/hooks/use-updateAcount";
-import { get } from "http";
 
 const Profile = () => {
   const { data, refetch } = useQuery({
@@ -37,15 +34,25 @@ const Profile = () => {
     register: changeEmailReg,
     control,
     handleSubmit: handleSubmitEmail,
+    formState: { errors: emailErrors },
+    getValues: getEmailValues,
   } = useForm({});
-  const { register: changePasswordReg, handleSubmit: handleSubmitPassword } =
-    useForm();
-  const { register: deleteAccountReg, handleSubmit: deleteAccountSubmit } =
-    useForm();
+  const {
+    register: changePasswordReg,
+    handleSubmit: handleSubmitPassword,
+    formState: { errors: passwordErrors },
+    getValues: getPasswordValues,
+  } = useForm();
+  const {
+    register: deleteAccountReg,
+    handleSubmit: deleteAccountSubmit,
+    formState: { errors: deleteErrors },
+  } = useForm();
   const {
     register: changeUsernameReg,
     handleSubmit: handleSubmitUsername,
     getValues: getUserValues,
+    formState: { errors: usernameErrors },
   } = useForm();
   const { register: profilePicture, handleSubmit: handleSubmitProfilePicture } =
     useForm();
@@ -85,6 +92,37 @@ const Profile = () => {
     getUserValues().username,
     refetch()
   );
+  const { mutate: updateEmail } = useUpdateAccount(
+    "email",
+    getEmailValues().email,
+    refetch()
+  );
+  const { mutate: updatePassword } = useUpdateAccount(
+    "password",
+    getUserValues().password,
+    refetch()
+  );
+  const { mutate: deleteAccount } = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await axios.post(
+        "http://localhost:8008/users/update/delete",
+        data,
+        {
+          headers: {
+            Authorization: authHeader(),
+          },
+        }
+      );
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success("Account Deleted Successfully");
+      window.location.reload();
+    },
+    onError: (err: any) => {
+      toast.error("Account Deletion Failed");
+    },
+  });
 
   return (
     <>
@@ -145,16 +183,22 @@ const Profile = () => {
                 For="newUsername"
                 Label="Username"
                 placeholder="John"
-                required={true}
-                register={changeUsernameReg("username")}
+                register={changeUsernameReg("username", {
+                  maxLength: 20,
+                  minLength: 3,
+                  required: true,
+                })}
               />
+              {usernameErrors.username && (
+                <p>Username must be between 3 and 20 characters</p>
+              )}
               <input type="submit" value="Change Username" />
             </Form>
             <Form
               id="change-email-form"
               onSubmit={handleSubmitEmail((formValues) => {
                 event?.preventDefault;
-                console.log(formValues);
+                updateEmail(formValues);
               })}
             >
               <FormItem
@@ -162,51 +206,88 @@ const Profile = () => {
                 For="newEmail"
                 Label="Email"
                 placeholder="John@email.com"
-                required={true}
-                register={changeEmailReg("email")}
+                register={changeEmailReg("email", {
+                  validate: (value) => {
+                    return (
+                      value.includes("@") &&
+                      value.includes(".") &&
+                      value.length > 5
+                    );
+                  },
+                  required: true,
+                })}
               />
+              {emailErrors.email && <p>Invalid email</p>}
               <input type="submit" value="Change Email" />
             </Form>
             <Form
               id="change-email-form"
               onSubmit={handleSubmitPassword((formValues) => {
                 event?.preventDefault();
-                console.log(formValues);
+                updatePassword(formValues);
               })}
             >
               <FormItem
                 Type="password"
-                For="newPassword"
+                For="password"
                 Label="Password"
                 placeholder="*******"
                 required={true}
-                register={changePasswordReg("newPassword")}
+                register={changePasswordReg("password", {
+                  pattern: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/,
+                  required: true,
+                })}
               />
+              {passwordErrors.password && (
+                <p>
+                  Password must be at least 8 characters long and contain at
+                  least one uppercase letter, one lowercase letter and one
+                  number
+                </p>
+              )}
               <FormItem
                 Type="password"
                 For="confirmPassword"
                 Label="Confirm Password"
                 placeholder="*******"
                 required={true}
-                register={changePasswordReg("confirmPassword")}
+                register={changePasswordReg("confirmPassword", {
+                  required: true,
+                  validate: (value) => {
+                    return value === getPasswordValues().password;
+                  },
+                })}
               />
+              {passwordErrors.confirmPassword && <p>Passwords do not match</p>}
               <input type="submit" value="Change Password" />
             </Form>
             <Form
               id="delete-account"
               onSubmit={deleteAccountSubmit((formValues) => {
                 event?.preventDefault();
-                console.log(formValues);
+                const cookie = document.cookie.split(";").find((c) => {
+                  if (c.includes("_auth_refresh")) return c;
+                })?.split("=")[1];
+                const newFormValues = {
+                  ...formValues,
+                  refreshToken: cookie,
+                };
+                deleteAccount(newFormValues);
               })}
             >
               <FormItem
                 Type="text"
-                For="deleteAccount"
+                For="username"
                 Label="Username"
                 placeholder="Type Username to confirm deletion"
-                required={true}
-                register={deleteAccountReg("deleteAccount")}
+                register={deleteAccountReg("username", {
+                  required: true,
+                  validate: (value) => {
+                    return value === data?.username;
+                  },
+                })}
               />
+              {deleteErrors.username && <p>Username does not match</p>}
               <input id="delete-button" type="submit" value="Delete Account" />
             </Form>
           </Card>

@@ -27,9 +27,13 @@ export const useUpdateAccount = (
       toast.success("Account updated successfully");
       refetch();
     },
-    onError: (err) => {
-      console.log(err);
-      toast.error("Something went wrong");
+    onError: (err: any) => {
+      if (err?.message == "refetch is not a function") return;
+      if (err?.response?.status == 409) {
+        toast.error("User already exists");
+      } else {
+        toast.error("Something went wrong");
+      }
     },
   });
   return { mutate, isLoading, isError, isSuccess };
