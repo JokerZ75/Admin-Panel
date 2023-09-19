@@ -305,32 +305,29 @@ router.route("/update/delete").post(Authenticate, async (req, res) => {
     userFound.length > 0 &&
     userFound[0]._id.toString() == req.user._id.toString()
   ) {
+    // remove refresh token
+    refreshTokens = refreshTokens.filter(
+      (token) => token !== req.body.refreshToken
+    );
+    // remove profile image
+    const fs = require("fs");
+    const path = require("path");
+    const filePath = await path.join(
+      __dirname,
+      "../uploads/" + req.user._id + ".jpg"
+    );
+    await fs.unlink(filePath, (err: any) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+    });
+    // remove orders
+    const Order = await require("../models/order.model");
+    await Order.deleteMany({ owner: req.user._id });
+    // remove user
     User.findByIdAndDelete(req.user._id)
-      .then(async () => {
-        console.log(refreshTokens);
-        // remove refresh token
-        refreshTokens = refreshTokens.filter(
-          (token) => token !== req.body.refreshToken
-        );
-        // remove profile image
-        const fs = require("fs");
-        const path = require("path");
-        const filePath = path.join(
-          __dirname,
-          "../uploads/" + req.user._id + ".jpg"
-        );
-        fs.unlink(filePath, (err: any) => {
-          if (err) {
-            console.error(err);
-            return;
-          }
-        });
-        console.log(refreshTokens);
-        return res.json({
-          message: "User deleted!",
-          statusCode: 200,
-        });
-      })
+      .then(() => res.json({ message: "User deleted!", statusCode: 200 }))
       .catch((err) =>
         res.status(400).json({ message: "Error: " + err, statusCode: 400 })
       );
