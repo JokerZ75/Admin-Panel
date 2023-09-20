@@ -36,7 +36,14 @@ const Orders = () => {
     },
   });
 
-  const { register, control, handleSubmit, setValue, getValues } = useForm({});
+  const {
+    register,
+    control,
+    handleSubmit,
+    setValue,
+    getValues,
+    formState: { errors },
+  } = useForm({});
   const AddProduct = () => {
     setProducts([...products, {}]);
   };
@@ -84,7 +91,7 @@ const Orders = () => {
         ];
       }),
       amount: formValues.products.reduce((acc: number, product: any) => {
-        return acc + parseInt(product["quantity"]) * parseInt(product["price"]);
+        return acc + parseInt(product["quantity"]) * parseFloat(product["price"]);
       }, 0),
       status: formValues.status,
       shipped: formValues.shipped,
@@ -156,33 +163,60 @@ const Orders = () => {
                     Label="Name"
                     placeholder="John Doe"
                     Type="text"
-                    register={register("name")}
-                    required={true}
+                    register={register("name", {
+                      required: true,
+                      maxLength: 20,
+                      minLength: 1,
+                    })}
                   />
                   <Input
                     For="email"
                     Label="Email"
                     placeholder="John@email.com"
                     Type="text"
-                    register={register("email")}
-                    required={true}
+                    register={register("email", {
+                      required: true,
+                      validate: (value) => {
+                        return (
+                          value.includes("@") &&
+                          value.includes(".") &&
+                          value.length > 5
+                        );
+                      },
+                    })}
                   />
+                  {errors.email && (
+                    <p className="error-text">
+                      Please enter a valid email address
+                    </p>
+                  )}
                   <Input
                     For="address"
                     Label="Address"
                     placeholder="22 Combine St"
                     Type="text"
-                    register={register("address")}
-                    required={true}
+                    register={register("address", {
+                      required: true,
+                      maxLength: 40,
+                      minLength: 1,
+                    })}
                   />
                   <Input
                     For="phone"
                     Label="Phone"
                     placeholder="07575 39281"
                     Type="text"
-                    register={register("phone")}
-                    required={true}
+                    register={register("phone", {
+                      required: true,
+                      // pattern can include a space has 11 digits
+                      pattern: /^(\d\s?){11}$/,
+                    })}
                   />
+                  {errors.phone && (
+                    <p className="error-text">
+                      Please enter a valid phone number
+                    </p>
+                  )}
                   <div>
                     <label id="product-label" htmlFor="Products">
                       Products
@@ -202,7 +236,11 @@ const Orders = () => {
                               type="text"
                               id={`item-${index}`}
                               placeholder="Product Name"
-                              {...register(`products.${index}.item`)}
+                              {...register(`products.${index}.item`, {
+                                required: true,
+                                maxLength: 20,
+                                minLength: 1,
+                              })}
                               defaultValue={product["item"]}
                             />
                             <label htmlFor={`quantity-${index}`}>
@@ -212,8 +250,11 @@ const Orders = () => {
                               type="number"
                               id={`quantity-${index}`}
                               placeholder="Product Quantity"
-                              min={1}
-                              {...register(`products.${index}.quantity`)}
+                              {...register(`products.${index}.quantity`, {
+                                required: true,
+                                pattern: /^[0-9]*$/,
+                                min: 1,
+                              })}
                               defaultValue={product["quantity"]}
                             />
                             <label htmlFor={`price-${index}`}>Price</label>
@@ -221,8 +262,11 @@ const Orders = () => {
                               type="number"
                               id={`price-${index}`}
                               placeholder="Product Price In £"
-                              min={1}
-                              {...register(`products.${index}.price`)}
+                              {...register(`products.${index}.price`, {
+                                required: true,
+                                pattern: /^[0-9]*\.?[0-9]*$/,
+                                min: 1,
+                              })}
                               defaultValue={product["price"]}
                             />
                             <input
@@ -243,13 +287,17 @@ const Orders = () => {
                     For="status"
                     Label="Status"
                     Options={["Success", "Pending", "Cancelled"]}
-                    register={register("status")}
+                    register={register("status", {
+                      required: true,
+                    })}
                   />
                   <Select
                     For="shipped"
                     Label="Shipped"
                     Options={["Shipped", "Pending"]}
-                    register={register("shipped")}
+                    register={register("shipped", {
+                      required: true,
+                    })}
                   />
                   <input type="submit" />
                   <button
@@ -276,6 +324,7 @@ const Orders = () => {
                   id="order-form"
                   onSubmit={handleSubmit((formValues) => {
                     event?.preventDefault();
+                    console.log(formValues.products);
                     handleSubmitOrder(formValues);
                   })}
                 >
@@ -284,33 +333,59 @@ const Orders = () => {
                     Label="Name"
                     placeholder="John Doe"
                     Type="text"
-                    register={register("name")}
-                    required={true}
+                    register={register("name", {
+                      required: true,
+                      maxLength: 20,
+                      minLength: 1,
+                    })}
                   />
                   <Input
                     For="email"
                     Label="Email"
                     placeholder="John@email.com"
                     Type="text"
-                    register={register("email")}
-                    required={true}
+                    register={register("email", {
+                      required: true,
+                      validate: (value) => {
+                        return (
+                          value.includes("@") &&
+                          value.includes(".") &&
+                          value.length > 5
+                        );
+                      },
+                    })}
                   />
+                  {errors.email && (
+                    <p className="error-text">
+                      Please enter a valid email address
+                    </p>
+                  )}
                   <Input
                     For="address"
                     Label="Address"
                     placeholder="22 Combine St"
                     Type="text"
-                    register={register("address")}
-                    required={true}
+                    register={register("address", {
+                      required: true,
+                      maxLength: 40,
+                      minLength: 1,
+                    })}
                   />
                   <Input
                     For="phone"
                     Label="Phone"
                     placeholder="07575 39281"
                     Type="text"
-                    register={register("phone")}
-                    required={true}
+                    register={register("phone", {
+                      required: true,
+                      pattern: /^(\d\s?){11}$/,
+                    })}
                   />
+                  {errors.phone && (
+                    <p className="error-text">
+                      Please enter a valid phone number
+                    </p>
+                  )}
                   <div>
                     <label id="product-label" htmlFor="Products">
                       Products
@@ -330,7 +405,12 @@ const Orders = () => {
                               type="text"
                               id={`item-${index}`}
                               placeholder="Product Name"
-                              {...register(`products.${index}.item`)}
+                              {...register(`products.${index}.item`, {
+                                required: true,
+                                maxLength: 20,
+                                minLength: 1,
+
+                              })}
                               value={product["item"]}
                             />
                             <label htmlFor={`quantity-${index}`}>
@@ -340,18 +420,26 @@ const Orders = () => {
                               type="number"
                               id={`quantity-${index}`}
                               placeholder="Product Quantity"
-                              min={1}
                               defaultValue={1}
-                              {...register(`products.${index}.quantity`)}
+                              {...register(`products.${index}.quantity`, {
+                                required: true,
+                                pattern: /^[0-9]*$/,
+                                min: 1,
+                              })}
                               value={product["quantity"]}
                             />
                             <label htmlFor={`price-${index}`}>Price</label>
                             <input
                               type="number"
+                              step={0.01}
                               id={`price-${index}`}
                               placeholder="Product Price In £"
-                              min={1}
-                              {...register(`products.${index}.price`)}
+                              {...register(`products.${index}.price`, {
+                                required: true,
+                                pattern: /^[0-9]*\.?[0-9]*$/,
+                                min: 0,
+
+                              })}
                               value={product["price"]}
                             />
                             <input
@@ -372,13 +460,17 @@ const Orders = () => {
                     For="status"
                     Label="Status"
                     Options={["Success", "Pending", "Cancelled"]}
-                    register={register("status")}
+                    register={register("status", {
+                      required: true,
+                    })}
                   />
                   <Select
                     For="shipped"
                     Label="Shipped"
                     Options={["Shipped", "Pending"]}
-                    register={register("shipped")}
+                    register={register("shipped", {
+                      required: true,
+                    })}
                   />
                   <input type="submit" />
                 </Form>
