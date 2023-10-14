@@ -58,13 +58,18 @@ const index = () => {
       });
 
       let monthMap = new Map<string, number>();
+      let month:number[] = [];
       await data.forEach((order: RecentOrder) => {
-        let month = new Date(order.createdAt).getMonth().toString();
-        month = months[parseInt(month)];
-        if (monthMap.has(month)) {
-          monthMap.set(month, monthMap.get(month)! + 1);
+        month.push(new Date(order.createdAt).getMonth());
+      });
+      month.sort((a, b) => a - b);
+      month.forEach((month: number) => {
+        let monthString = months[month];
+        console.log(monthString);
+        if (monthMap.has(monthString)) {
+          monthMap.set(monthString, monthMap.get(monthString)! + 1);
         } else {
-          monthMap.set(month, 1);
+          monthMap.set(monthString, 1);
         }
       });
       let graphData: Array<{
@@ -123,7 +128,7 @@ const index = () => {
                 £
                 {data
                   .map((order: RecentOrder) => order.amount)
-                  .reduce((a: number, b: number) => a + b, 0)}
+                  .reduce((a: number, b: number) => a + b, 0).toFixed(2)}
               </p>
             )) || <p>Loading...</p>}
           </Card>
